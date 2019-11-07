@@ -1,5 +1,6 @@
 #include "../include/Vector2.h"
 #include <math.h>
+#include <iostream>
 
 Vector2::Vector2() {
     X = 0;
@@ -54,7 +55,7 @@ Vector2 *Vector2::Scale(double Scalar) {
 }
 
 double Vector2::GetMagnitude() {
-    return sqrt(X ^ 2 + Y ^ 2);
+    return sqrt(X * X + Y * Y);
 }
 
 Vector2 *Vector2::Normalize() {
@@ -71,4 +72,9 @@ Vector2 *Vector2::Invert() {
     X *= -1;
     Y *= -1;
     return this;
+}
+
+std::ostream& operator<<(std::ostream &os, const Vector2& v2) {
+    os << "(" << v2.X << ", " << v2.Y << ")";
+    return os;
 }
