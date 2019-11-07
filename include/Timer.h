@@ -24,7 +24,7 @@ public:
      */
     static void SetAutomaticUpdates(bool Automatic);
 
-    Timer(double Delay);
+    explicit Timer(double Delay);
 
     /**
      * returns true if it is time to handle a tick
