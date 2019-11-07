@@ -18,13 +18,14 @@ void Timer::SetManualUpdateManagement(bool ManualCalls) {
 Timer::Timer(double Delay) {
     this->Delay = Delay;
     TimeMultiplier = 1;
+    UpdateEffectiveDelay();
     LastUpdate = CurrentTime;
     Paused = false;
 }
 
 bool Timer::IsTime() {
     if (PeekIsTime()) {
-        LastUpdate += GetEffectiveDelay();
+        LastUpdate += EffectiveDelay;
         return true;
     }
     return false;
@@ -37,7 +38,7 @@ bool Timer::PeekIsTime() {
     if (!ManualCalls) {
         UpdateTime();
     }
-    return std::chrono::duration_cast<std::chrono::nanoseconds>(CurrentTime - LastUpdate) >= GetEffectiveDelay();
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(CurrentTime - LastUpdate) >= EffectiveDelay;
 }
 
 double Timer::PeekProgress() {
@@ -48,7 +49,7 @@ double Timer::PeekProgress() {
 }
 
 double Timer::PeekProgressPercentage() {
-    return PeekProgress() / std::chrono::duration_cast<std::chrono::nanoseconds>(GetEffectiveDelay()).count() * 1000000;
+    return PeekProgress() / std::chrono::duration_cast<std::chrono::nanoseconds>(EffectiveDelay).count() * 1000000;
 }
 
 double Timer::GetTimeMultiplier() {
@@ -66,6 +67,7 @@ void Timer::SetTimeMultiplier(double TimeMultiplier) {
                 this->TimeMultiplier / TimeMultiplier));
     }
     this->TimeMultiplier = TimeMultiplier;
+    UpdateEffectiveDelay();
 }
 
 bool Timer::IsPaused() {
@@ -84,8 +86,8 @@ void Timer::Resume() {
     }
 }
 
-std::chrono::nanoseconds Timer::GetEffectiveDelay() {
-    return std::chrono::nanoseconds((long) (Delay / TimeMultiplier * 1000000));
+void Timer::UpdateEffectiveDelay() {
+    EffectiveDelay = std::chrono::nanoseconds((long) (Delay / TimeMultiplier * 1000000));
 }
 
 /**

@@ -53,10 +53,11 @@ private:
     static std::chrono::time_point<std::chrono::steady_clock> CurrentTime;
     static bool ManualCalls;
 
-    std::chrono::nanoseconds GetEffectiveDelay();
+    void UpdateEffectiveDelay();
     void SwitchPauseState();
 
     std::chrono::time_point<std::chrono::steady_clock> LastUpdate;
+    std::chrono::nanoseconds EffectiveDelay;
     double Delay;
     double TimeMultiplier;
     bool Paused;
