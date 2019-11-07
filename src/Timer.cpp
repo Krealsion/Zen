@@ -5,14 +5,14 @@
 #include "../include/Timer.h"
 
 std::chrono::time_point<std::chrono::steady_clock> Timer::CurrentTime = std::chrono::steady_clock::now();
-bool Timer::ManualCalls = true;
+bool Timer::AutomaticUpdates = true;
 
 void Timer::UpdateTime() {
     CurrentTime = std::chrono::steady_clock::now();
 }
 
-void Timer::SetManualUpdateManagement(bool ManualCalls) {
-    Timer::ManualCalls = ManualCalls;
+void Timer::SetAutomaticUpdates(bool AutomaticUpdates) {
+    Timer::AutomaticUpdates = AutomaticUpdates;
 }
 
 Timer::Timer(double Delay) {
@@ -35,7 +35,7 @@ bool Timer::PeekIsTime() {
     if (Paused) {
         return false;
     }
-    if (!ManualCalls) {
+    if (AutomaticUpdates) {
         UpdateTime();
     }
     return std::chrono::duration_cast<std::chrono::nanoseconds>(CurrentTime - LastUpdate) >= EffectiveDelay;
@@ -90,10 +90,6 @@ void Timer::UpdateEffectiveDelay() {
     EffectiveDelay = std::chrono::nanoseconds((long) (Delay / TimeMultiplier * 1000000));
 }
 
-/**
- * Internal Function
- * Swaps the Pause state by either storing or restoring the time progressed since the Pause
- */
 void Timer::SwitchPauseState() {
     Paused = !Paused;
     LastUpdate = CurrentTime - LastUpdate.time_since_epoch();

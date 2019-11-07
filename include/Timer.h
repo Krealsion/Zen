@@ -10,14 +10,19 @@
 
 class Timer {
 public:
+    /**
+     * Updates the CurrentTime, as understood by the timer.
+     * Required to be called at the beginning of an update cycle if
+     * SetAutomaticUpdateManagement(true) was not called.
+     */
     static void UpdateTime();
     /**
      * This sets whether UpdateTime() will be called.
-     * If set to false, each check of IsTime() will update the CurrentTime
-     * Not recommended for situations where order of IsTime() fires are important
-     * @param ManualCalls True for calling UpdateTime() manually, False for Automatic CurrentTime Updates
+     * If set to true, each check of IsTime() will update the CurrentTime.
+     * Not recommended for situations where order of IsTime() fires are important.
+     * @param Automatic False for calling UpdateTime() manually, True for Automatic CurrentTime Updates
      */
-    static void SetManualUpdateManagement(bool ManualCalls);
+    static void SetAutomaticUpdates(bool Automatic);
 
     Timer(double Delay);
 
@@ -50,12 +55,14 @@ public:
     void Resume();
 
 private:
+    //The current time as understood by the timer class (Not always up to date)
     static std::chrono::time_point<std::chrono::steady_clock> CurrentTime;
-    static bool ManualCalls;
+    static bool AutomaticUpdates;
 
     void UpdateEffectiveDelay();
     void SwitchPauseState();
 
+    //Represents the time when the last tick was supposed to fire
     std::chrono::time_point<std::chrono::steady_clock> LastUpdate;
     std::chrono::nanoseconds EffectiveDelay;
     double Delay;
