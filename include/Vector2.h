@@ -13,6 +13,7 @@ public:
     Vector2* SetY(double Y);
     Vector2* AddX(double X);
     Vector2* AddY(double Y);
+    Vector2* Multiply(Vector2 o);
     Vector2* Scale(double Scalar);
     Vector2* Normalize();
     Vector2* Abs();

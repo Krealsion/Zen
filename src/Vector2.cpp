@@ -1,5 +1,5 @@
 #include "../include/Vector2.h"
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 Vector2::Vector2() {
@@ -41,11 +41,17 @@ double Vector2::GetY() {
 }
 
 int Vector2::GetXInt() {
-    return round(this->X)
+    return round(this->X);
 }
 
 int Vector2::GetYInt() {
-    return round(this->Y)
+    return round(this->Y);
+}
+
+Vector2* Vector2::Multiply(Vector2 o) {
+    X *= o.GetX();
+    Y *= o.GetY();
+    return this;
 }
 
 Vector2 *Vector2::Scale(double Scalar) {
