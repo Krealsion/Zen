@@ -92,6 +92,10 @@ Vector2 *Vector2::Invert() {
     return this;
 }
 
+Vector2 Vector2::Copy(){
+    return Vector2(X, Y);
+}
+
 std::ostream& operator<<(std::ostream &os, const Vector2& v2) {
     os << "(" << v2.X << ", " << v2.Y << ")";
     return os;

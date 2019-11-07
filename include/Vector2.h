@@ -27,6 +27,8 @@ public:
     int GetYInt();
     double GetMagnitude();
 
+    Vector2 Copy();
+
     friend std::ostream& operator<<(std::ostream &os, const Vector2 &v2);
 
 protected:
