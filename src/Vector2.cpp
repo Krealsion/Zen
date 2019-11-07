@@ -75,8 +75,8 @@ Vector2 *Vector2::Normalize() {
 }
 
 Vector2 *Vector2::Abs() {
-    X = abs(X);
-    Y = abs(Y);
+    X = fabs(X);
+    Y = fabs(Y);
     return this;
 }
 
