@@ -12,24 +12,24 @@ Vector2::Vector2(double X, double Y) {
     this->Y = Y;
 }
 
-Vector2 *Vector2::SetX(double X) {
+Vector2& Vector2::SetX(double X) {
     this->X = X;
-    return this;
+    return *this;
 }
 
-Vector2 *Vector2::SetY(double Y) {
+Vector2& Vector2::SetY(double Y) {
     this->Y = Y;
-    return this;
+    return *this;
 }
 
-Vector2 *Vector2::AddX(double X) {
+Vector2& Vector2::AddX(double X) {
     this->X += X;
-    return this;
+    return *this;
 }
 
-Vector2 *Vector2::AddY(double Y) {
+Vector2& Vector2::AddY(double Y) {
     this->Y += Y;
-    return this;
+    return *this;
 }
 
 double Vector2::GetX() {
@@ -48,55 +48,55 @@ int Vector2::GetYInt() {
     return round(this->Y);
 }
 
-Vector2* Vector2::Add(Vector2 o) {
+Vector2& Vector2::Add(Vector2 o) {
     X += o.GetX();
     Y += o.GetY();
-    return this;
+    return *this;
 }
 
-Vector2* Vector2::Multiply(Vector2 o) {
+Vector2& Vector2::Multiply(Vector2 o) {
     X *= o.GetX();
     Y *= o.GetY();
-    return this;
+    return *this;
 }
 
-Vector2 *Vector2::Scale(double Scalar) {
+Vector2& Vector2::Scale(double Scalar) {
     X *= Scalar;
     Y *= Scalar;
-    return this;
+    return *this;
 }
 
 double Vector2::GetMagnitude() {
     return sqrt(X * X + Y * Y);
 }
 
-Vector2 *Vector2::Normalize() {
+Vector2& Vector2::Normalize() {
     return Scale(1 / GetMagnitude());
 }
 
-Vector2 *Vector2::Abs() {
+Vector2& Vector2::Abs() {
     X = fabs(X);
     Y = fabs(Y);
-    return this;
+    return *this;
 }
 
-Vector2* Vector2::Negate(){
+Vector2& Vector2::Negate() {
     X *= -1;
     Y *= -1;
-    return this;
+    return *this;
 }
 
-Vector2 *Vector2::Invert() {
+Vector2& Vector2::Invert() {
     X = 1 / X;
     Y = 1 / Y;
-    return this;
+    return *this;
 }
 
-Vector2 Vector2::Copy(){
+Vector2 Vector2::Copy() {
     return Vector2(X, Y);
 }
 
-std::ostream& operator<<(std::ostream &os, const Vector2& v2) {
+std::ostream& operator<<(std::ostream& os, const Vector2& v2) {
     os << "(" << v2.X << ", " << v2.Y << ")";
     return os;
 }
