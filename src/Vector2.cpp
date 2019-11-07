@@ -48,6 +48,12 @@ int Vector2::GetYInt() {
     return round(this->Y);
 }
 
+Vector2* Vector2::Add(Vector2 o) {
+    X += o.GetX();
+    Y += o.GetY();
+    return this;
+}
+
 Vector2* Vector2::Multiply(Vector2 o) {
     X *= o.GetX();
     Y *= o.GetY();
