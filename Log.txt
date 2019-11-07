@@ -25,7 +25,7 @@ Pausing posed some potential space waste, as the duration passed since last tick
 *** My favorite problem*** Setting a new time modifier was difficult as time passed was not being tracked against a static delay. A dynamic "Effective Delay" made switching the TimeMultiplier not a percentage consistant change when simply updating the multiplier. In order to keep it consistent, the function now also either adds or subtracts time from the "LastUpdate" tracker to maintain the correct percentage when the TimeMultiplier is updated.
 An option for manual calls was added, though still under consideration, as it just adds another static field and adds a very small amount of time complexity overall, while only supporting a minor edge case for overall project implementation styles
 ----------------------------------------------
-Solution:The final product is an object that has configurable delay, TimeMultiplier, and pause status while adding no new threads or sleep counters to the program. In order to implement a small overhead is nessesary once followed by, a declaration and definition for a timer, and a simple one line implmentation around the code to be run. e.g.
+Solution:The final product is an object that has configurable initial delay, TimeMultiplier, and pause status while adding no new threads or sleep counters to the program. In order to implement a small overhead is nessesary once followed by, a declaration and definition for a timer, and a simple one line implmentation around the code to be run. e.g.
 
 ```c++
 int main(){
