@@ -17,6 +17,7 @@ public:
     Vector2* Scale(double Scalar);
     Vector2* Normalize();
     Vector2* Abs();
+    Vector2* Negate();
     Vector2* Invert();
 
     double GetX();

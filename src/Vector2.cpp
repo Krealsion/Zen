@@ -74,9 +74,15 @@ Vector2 *Vector2::Abs() {
     return this;
 }
 
-Vector2 *Vector2::Invert() {
+Vector2* Vector2::Negate(){
     X *= -1;
     Y *= -1;
+    return this;
+}
+
+Vector2 *Vector2::Invert() {
+    X = 1 / X;
+    Y = 1 / Y;
     return this;
 }
 
