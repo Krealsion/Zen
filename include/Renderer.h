@@ -5,44 +5,49 @@
 #include <string>
 #include <SDL.h>
 
-class Renderer{
-	public:
-		Renderer(std::string Name, int PosX, int PosY, int ScreenWidth, int ScreenHeight);
-		~Renderer();
+#include "Rectangle.h"
 
-		SDL_Renderer* GetRenderer();
+/**
+ * The renderer is in charge of creating and displaying the window
+ * as well as any rendering of objects to the window
+ * TODO Will possibly be split into two classes Window and Renderer for simplicity
+ * TODO split texture loading and creation into a separate class
+ */
+class Renderer {
+public:
+    Renderer();
+    Renderer(const std::string& Name, Rectangle WindowRectangle);
+    ~Renderer();
 
-		void RenderObj(SDL_Texture *Texture, SDL_Rect *Destination, SDL_Rect *Cliping, double Angle, SDL_Point* Origin);
-		void RenderObj(SDL_Texture *Texture, SDL_Rect *Destination);
+    void RenderObj(SDL_Texture* Texture, SDL_Rect* Destination, SDL_Rect* Clipping, double Angle, SDL_Point* Origin);
+    void RenderObj(SDL_Texture* Texture, SDL_Rect* Destination);
 
-        SDL_Texture* LoadTexture(const std::string &Path);
-        SDL_Texture* GetTexture(const std::string &Path);
-        SDL_Texture* LoadText(const std::string Text, const std::string FontName, const int Size, SDL_Color Color);
+    SDL_Texture* LoadTexture(const std::string &Path);
+    SDL_Texture* GetTexture(const std::string &Path);
+    SDL_Texture* LoadText(const std::string &Text, std::string FontName, int Size, SDL_Color Color);
 
-		void RenderStart();
-		void RenderFinish();
+    void RenderStart();
+    void RenderFinish();
 
-		SDL_Rect* CameraShift(SDL_Rect* TranslatedObj);
+    SDL_Rect* CameraShift(SDL_Rect* TranslatedObj);
 
-		void SetX(int NewX);
-		void SetY(int NewY);
-		int GetX();
-		int GetY();
+    void SetWindowX(int NewX);
+    void SetWindowY(int NewY);
+    int GetWindowX();
+    int GetWindowY();
 
-		void SetWidth(int NewWidth);
-		void SetHeight(int NewHeight);
-		int GetHeight();
-		int GetWidth();
+    void SetWidth(int NewWidth);
+    void SetHeight(int NewHeight);
+    int GetHeight();
+    int GetWidth();
 
-		int GetFPS();
-		int GetRenderTime();
+protected:
+    std::vector<SDL_Texture*> Textures;
+    std::vector<std::string> Paths;
 
-	protected:
-	    std::vector<SDL_Texture*> Textures;
-	    std::vector<std::string> Paths;
-
-		SDL_Window* Window;
-		SDL_Renderer* Render;
-		SDL_Point Camera;
+    SDL_Window* Window;
+    SDL_Renderer* Render;
+    Vector2 Camera;
 };
+
 #endif
