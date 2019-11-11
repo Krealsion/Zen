@@ -10,6 +10,7 @@
 class Rectangle {
 public:
     Rectangle();
+    Rectangle(double X, double Y, double Width, double Height);
     Rectangle(Vector2 Position, Vector2 Size);
 
     Vector2 GetPosition();

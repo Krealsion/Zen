@@ -6,6 +6,11 @@
 
 Rectangle::Rectangle() = default;
 
+Rectangle::Rectangle(double X, double Y, double Width, double Height) {
+    Position = Vector2(X, Y);
+    Size = Vector2(Width, Height);
+}
+
 Rectangle::Rectangle(Vector2 Position, Vector2 Size) {
     // Ensure that this is a copy set, not a reference
     this->Position = Position;
