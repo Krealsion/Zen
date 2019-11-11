@@ -14,6 +14,10 @@ public:
 
     Vector2 GetPosition();
     Vector2 GetSize();
+    double GetX();
+    double GetY();
+    double GetWidth();
+    double GetHeight();
 
     Rectangle& SetPosition(Vector2 Position);
     Rectangle& SetSize(Vector2 Size);

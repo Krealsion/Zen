@@ -20,6 +20,22 @@ Vector2 Rectangle::GetSize() {
     return Size;
 }
 
+double Rectangle::GetX() {
+    return Position.GetX();
+}
+
+double Rectangle::GetY() {
+    return Position.GetY();
+}
+
+double Rectangle::GetWidth() {
+    return Size.GetX();
+}
+
+double Rectangle::GetHeight() {
+    return Size.GetY();
+}
+
 Rectangle& Rectangle::SetPosition(Vector2 Position) {
     this->Position = Position;
     return *this;
