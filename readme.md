@@ -4,14 +4,14 @@ The use of this engine is to allow for quicker development of games by using eas
 
 The Engine also makes use of Multi-Threading to split the Update and Draw method functionality, allowing for a smoother framerate.
 
-##How to Use
+## How to Use
 
-#CMAKE
-```cmake
+# CMAKE
+
 In order to implement this GameEngine, you will need to add it to the CMakeLists of the project you are building
 
 An example CMakeLists.txt file is:
-
+```cmake
 project(Project VERSION 1.0)
 
 set(CMAKE_CXX_STANDARD 17)
