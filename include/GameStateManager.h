@@ -7,33 +7,33 @@
 // Forward declaration, included in implementation
 class GameState;
 
-class GameGraphics{}; //Layer between the user and SDL_Graphics TODO
+class GameGraphics {
+}; //Layer between the user and SDL_Graphics TODO
 
+/**
+ * TODO for thread saftey, ensure that Draw does not draw null objects by having an itterator
+ * On gamestate pop, all objects will be deleted, possibly partway through a render
+ * Do not complete draw, and continue as normal
+ * Atomic bool needed
+ * Before Draw finish
+ */
 class GameStateManager {
 public:
     explicit GameStateManager(GameState* InitialState);
     ~GameStateManager();
 
-    void Update();
-
-    //Method called by separate thread
-    void Draw();
-
     //Methods for adding and removing GameStates
-    void PushState(GameState *State);
+    void PushState(GameState* State);
     void PopState();
 
     bool IsRunning();
     void Exit();
 
 protected:
-    /**
-     * TODO for thread saftey, ensure that Draw does not draw null objects by having an itterator
-     * On gamestate pop, all objects will be deleted, possibly partway through a render
-     * Do not complete draw, and continue as normal
-     * Atomic bool needed
-     * Before Draw finish
-     */
+    //Both of these methods are used internally by separate threads
+    void Update();
+    void Draw();
+
     std::thread UpdateThread;
     std::thread DrawThread;
     bool GameRunning;
