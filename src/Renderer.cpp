@@ -20,8 +20,8 @@ Renderer::Renderer(const std::string& Name, Rectangle WindowRectangle) {
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
     Window = SDL_CreateWindow(Name.c_str(),
-                              WindowRectangle.GetX(), WindowRectangle.GetY(),
-                              WindowRectangle.GetWidth(), WindowRectangle.GetHeight(),
+                              (int) WindowRectangle.GetX(), (int) WindowRectangle.GetY(),
+                              (int) WindowRectangle.GetWidth(), (int) WindowRectangle.GetHeight(),
                               SDL_WINDOW_SHOWN);
     Render = SDL_CreateRenderer(Window, 0, SDL_RENDERER_ACCELERATED);
     SDL_SetRenderDrawColor(Render, 0xFF, 0xFF, 0xFF, 0x00);
@@ -71,13 +71,12 @@ SDL_Texture* Renderer::LoadText(const std::string& Text, std::string FontName, i
 }
 
 SDL_Rect* Renderer::CameraShift(SDL_Rect* TranslatedObj) {
-    TranslatedObj->x -= Camera.GetX();
-    TranslatedObj->y -= Camera.GetY();
+    TranslatedObj->x -= Camera.GetXInt();
+    TranslatedObj->y -= Camera.GetYInt();
     return TranslatedObj;
 }
 
-void
-Renderer::RenderObj(SDL_Texture* Texture, SDL_Rect* Destination, SDL_Rect* Clipping, double Angle, SDL_Point* Origin) {
+void Renderer::RenderObj(SDL_Texture* Texture, SDL_Rect* Destination, SDL_Rect* Clipping, double Angle, SDL_Point* Origin) {
     SDL_RenderCopyEx(Render, Texture, Clipping, Destination, Angle, Origin, SDL_FLIP_NONE);
 }
 
@@ -86,7 +85,6 @@ void Renderer::RenderObj(SDL_Texture* Texture, SDL_Rect* Destination) {
 }
 
 void Renderer::SetWindowX(int NewX) {
-    //TODO check for better way to do this
     int OldY;
     SDL_GetWindowPosition(Window, nullptr, &OldY);
     SDL_SetWindowPosition(Window, NewX, OldY);
@@ -111,7 +109,6 @@ int Renderer::GetWindowY() {
 }
 
 void Renderer::SetHeight(int NewHeight) {
-    //TODO check for better way to do this
     int OldWidth;
     SDL_GetWindowSize(Window, &OldWidth, nullptr);
     SDL_SetWindowSize(Window, OldWidth, NewHeight);
