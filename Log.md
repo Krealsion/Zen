@@ -1,24 +1,27 @@
-## Format(subject to change):
+# Format (subject to change):
+## (Log Number) (Date): (Log Subject)
 
-(Log Number) (Date): (Log Subject)
+#### Problem:
+(Short description of the problem)
 
-Problem:(Short description of the problem)
+#### Requirements:
+(List of requirements the solution needs to address)
 
-Requirements:(List of requirements the solution needs to address)
+#### Dev Notes:
+(Notes about the process of coming up with the solution, general, not all comprehensive)
 
-Dev Notes:(Notes about the process of coming up with the solution, general, not all comprehensive)
+#### Solution:
+(Short description of the solution, as well as an example of the use case if applicable)
 
-Solution:(Short description of the solution, as well as an example of the use case if applicable)
-
-Final Thoughts:(List of potential future problems or improvements, or important information)
-
+#### Final Thoughts:
+(List of potential future problems or improvements, or important information)
+___
 ## 0 11/6/2019: Timer Time! (11/4 - 11/6)
 ##### Terms: 
 Timer - A object able to handle running code routinely at different intervals on the same thread
-
-Problem: Timers are not something pre-present in c++. Some implementations allow for similar functionality via either system sleep calls or alternate threads. The problem with these are that Sleep calls halt all other processes on the thred until that time has passed, while using other threads causes: async behaviour, abiguity, race conditions, and an overall more complex codebase.
-
-##### Requirements:
+#### Problem:
+Timers are not something pre-present in c++. Some implementations allow for similar functionality via either system sleep calls or alternate threads. The problem with these are that Sleep calls halt all other processes on the thred until that time has passed, while using other threads causes: async behaviour, abiguity, race conditions, and an overall more complex codebase.
+#### Requirements:
 -Needs to be able to handle long and short time frames. Time frames less than 1ms should be possible
 
 -Needs to handle the same time intervals separately
@@ -32,7 +35,6 @@ Problem: Timers are not something pre-present in c++. Some implementations allow
 -Should be able to check progress via percentages, milliseconds, and if it should fire
 
 -Pausing and resuming
-
 #### Dev Notes: 
 Given that high precision is required, chrono will be used to keep track of nanoseconds, while the general input/output will be measured in ms, for precision.
 
@@ -45,7 +47,6 @@ Pausing posed some potential space waste, as the duration passed since last tick
 **My favorite problem** Setting a new time modifier was difficult as time passed was not being tracked against a static delay. A dynamic "Effective Delay" made switching the TimeMultiplier not a percentage consistent change when simply updating the multiplier. In order to keep it consistent, the function now also either adds or subtracts time from the "LastUpdate" tracker to maintain the correct percentage when the TimeMultiplier is updated.
 
 An option for manual calls was added, though still under consideration, as it just adds another static field and adds a very small amount of time complexity overall, while only supporting a minor edge case for overall project implementation styles
-
 #### Solution:
 The final product is an object that has configurable initial delay, TimeMultiplier, and pause status while adding no new threads or sleep counters to the program. In order to implement a small overhead is necessary once followed by, a declaration and definition for a timer, and a simple one line implementation around the code to be run. e.g.
 
@@ -75,7 +76,7 @@ int main() {
 -Nanosecond tracking is overkill for the intended use of the timer
 
 -Keeping the EffectiveDelay as a separate variable would help time complexity, at the expense of space complexity(probably shouldn't care about an extra few bytes)
-
+___
 ## 1 11/12/2019: GameStates and Management
 #### Problem: 
 Encapsulation as well as different states/menus of a game are crucially important for readability
