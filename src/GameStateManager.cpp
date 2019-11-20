@@ -19,8 +19,9 @@ GameStateManager::GameStateManager(GameState* InitialState) {
 }
 
 GameStateManager::~GameStateManager() {
-    for (int i = 0; i < GameStates.size(); i++) {
-        delete[] GameStates[i];
+    while (!GameStates.empty()) {
+        delete GameStates.back();
+        GameStates.pop_back();
     }
 }
 
@@ -38,6 +39,7 @@ void GameStateManager::Draw() {
 }
 
 void GameStateManager::PushState(GameState* State) {
+    State->SetGameStateManager(this);
     if (!GameStates.empty()) {
         GameStates.back()->Pause();
     }
@@ -46,7 +48,9 @@ void GameStateManager::PushState(GameState* State) {
 
 void GameStateManager::PopState() {
     if (!GameStates.empty()) {
+        GameState* back = GameStates.back();
         GameStates.pop_back();
+        delete back;
         if (!GameStates.empty()) {
             GameStates.back()->Resume();
         }
