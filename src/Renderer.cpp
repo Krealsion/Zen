@@ -1,11 +1,11 @@
+#include "Renderer.h"
+
 #include <iostream>
 #include <string>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <vector>
-
-#include "../include/Renderer.h"
 
 Renderer::Renderer() {
     SDL_Init(SDL_INIT_EVERYTHING);

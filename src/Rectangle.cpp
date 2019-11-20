@@ -2,7 +2,7 @@
 // Created by jdemoss on 11/11/19.
 //
 
-#include "../include/Rectangle.h"
+#include "Rectangle.h"
 
 Rectangle::Rectangle() = default;
 

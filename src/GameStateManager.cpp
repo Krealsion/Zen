@@ -1,8 +1,7 @@
-#include "../include/GameStateManager.h"
+#include "GameStateManager.h"
 
-#include "../include/GameState.h"
-
-#include "../include/Timer.h"
+#include "GameState.h"
+#include "Timer.h"
 
 GameStateManager::GameStateManager(GameState* InitialState) {
     PushState(InitialState);

@@ -2,7 +2,7 @@
 // Created by jdemoss on 11/4/19.
 //
 
-#include "../include/Timer.h"
+#include "Timer.h"
 
 std::chrono::time_point<std::chrono::steady_clock> Timer::CurrentTime = std::chrono::steady_clock::now();
 bool Timer::AutomaticUpdates = true;
