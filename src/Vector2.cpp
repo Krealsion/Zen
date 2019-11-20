@@ -42,11 +42,11 @@ double Vector2::GetY() {
 }
 
 int Vector2::GetXInt() {
-    return round(this->X);
+    return (int)round(X);
 }
 
 int Vector2::GetYInt() {
-    return round(this->Y);
+    return (int)round(Y);
 }
 
 Vector2& Vector2::Add(Vector2 o) {
