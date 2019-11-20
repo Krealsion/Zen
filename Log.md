@@ -96,22 +96,25 @@ Having the threads access IsRunning to determine if they should continue allowed
 The current solution meets all the requirements necessary, and is designed to scale. The GameState has multiple virtual methods that allows for easy access to functionality used behind the scenes (pause, resume, update, draw, ect) which do not get called by the user.
 ```c++
 #include <iostream>
-
 #include <GameStateManager.h>
 #include <GameState.h>
 
-class Gs : public GameState{
+class Gs : public GameState {
 public:
+    int i;
     void Update(){
-        static int i = 0;
         std::cout << i++ << std::endl;
+        if (i == 10){
+            Manager->Exit();
+        }
     }
 };
 
 
 int main() {
     GameState* S = new Gs();
-    GameStateManager sm = GameStateManager(S);
+    GameStateManager Sm = GameStateManager(S);
+    return 0;
 }
 ```
 
