@@ -7,6 +7,7 @@ class GameGraphics; //TODO create class
 
 class GameState {
 public:
+    virtual ~GameState(){}
     virtual void Update() = 0;
     virtual void Draw(GameGraphics G) {};
     virtual void Pause() {}
