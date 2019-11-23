@@ -2,8 +2,8 @@
 // Created by jdemoss on 11/11/19.
 //
 
-#ifndef LEAVINGTERRA_RECTANGLE_H
-#define LEAVINGTERRA_RECTANGLE_H
+#ifndef RECTANGLE_H
+#define RECTANGLE_H
 
 #include "Vector2.h"
 
@@ -31,4 +31,4 @@ protected:
     Vector2 Size;
 };
 
-#endif //LEAVINGTERRA_RECTANGLE_H
+#endif //RECTANGLE_H

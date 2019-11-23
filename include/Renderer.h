@@ -1,5 +1,5 @@
-#ifndef RENDERER
-#define RENDERER
+#ifndef RENDERER_H
+#define RENDERER_H
 
 #include <vector>
 #include <string>
@@ -12,7 +12,6 @@
 /**
  * The renderer is in charge of creating and displaying the window
  * as well as any rendering of objects to the window
- * TODO Will possibly be split into two classes Window and Renderer for simplicity
  * TODO split texture loading and creation into a separate class
  */
 class Renderer {
@@ -39,4 +38,4 @@ protected:
     SDL_Renderer* Render;
 };
 
-#endif
+#endif //RENDERER_H

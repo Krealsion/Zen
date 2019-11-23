@@ -2,8 +2,8 @@
 // Created by jdemoss on 11/4/19.
 //
 
-#ifndef LEAVINGTERRA_TIMER_H
-#define LEAVINGTERRA_TIMER_H
+#ifndef TIMER_H
+#define TIMER_H
 
 #include <atomic>
 #include <chrono>
@@ -70,4 +70,4 @@ private:
     bool Paused;
 };
 
-#endif //LEAVINGTERRA_TIMER_H
+#endif //TIMER_H

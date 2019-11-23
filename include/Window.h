@@ -2,14 +2,15 @@
 // Created by jdemoss on 11/22/19.
 //
 
-#ifndef LEAVINGTERRA_WINDOW_H
-#define LEAVINGTERRA_WINDOW_H
+#ifndef WINDOW_H
+#define WINDOW_H
 
 #include <SDL_video.h>
 
 class Window {
 public:
-    Window(Rectangle WindowRectangle);
+    Window();
+    Window(const std::string &name, Rectangle WindowRectangle);
     ~Window();
 
     SDL_Window* GetWindow();
@@ -28,4 +29,4 @@ private:
     SDL_Window* SdlWindow;
 };
 
-#endif //LEAVINGTERRA_WINDOW_H
+#endif //WINDOW_H

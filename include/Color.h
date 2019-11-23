@@ -21,6 +21,7 @@ public:
     uint8 GetGreen() const;
     uint8 GetBlue() const;
     uint8 GetAlpha() const;
+
 private:
     uint8 Red, Green, Blue, Alpha;
 };
