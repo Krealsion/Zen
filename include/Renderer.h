@@ -6,6 +6,8 @@
 #include <SDL.h>
 
 #include "Rectangle.h"
+#include "Window.h"
+#include "GameGraphics.h"
 
 /**
  * The renderer is in charge of creating and displaying the window
@@ -16,38 +18,25 @@
 class Renderer {
 public:
     Renderer();
-    Renderer(const std::string& Name, Rectangle WindowRectangle);
+    Renderer(const std::string& name, Rectangle windowRectangle);
     ~Renderer();
 
-    void RenderObj(SDL_Texture* Texture, SDL_Rect* Destination, SDL_Rect* Clipping, double Angle, SDL_Point* Origin);
-    void RenderObj(SDL_Texture* Texture, SDL_Rect* Destination);
+    void RenderObj(SDL_Texture* texture, SDL_Rect* destination, SDL_Rect* clipping, double angle, SDL_Point* origin);
+    void RenderObj(SDL_Texture* texture, SDL_Rect* destination);
 
-    SDL_Texture* LoadTexture(const std::string &Path);
-    SDL_Texture* GetTexture(const std::string &Path);
-    SDL_Texture* LoadText(const std::string &Text, std::string FontName, int Size, SDL_Color Color);
+    SDL_Texture* LoadTexture(const std::string &path);
+    SDL_Texture* GetTexture(const std::string &path);
+    SDL_Texture* LoadText(const std::string &text, std::string fontName, int size, SDL_Color color);
 
-    void RenderStart();
-    void RenderFinish();
-
-    SDL_Rect* CameraShift(SDL_Rect* TranslatedObj);
-
-    void SetWindowX(int NewX);
-    void SetWindowY(int NewY);
-    int GetWindowX();
-    int GetWindowY();
-
-    void SetWidth(int NewWidth);
-    void SetHeight(int NewHeight);
-    int GetHeight();
-    int GetWidth();
+    void RenderGameGraphics(GameGraphics gameGraphics);
 
 protected:
+    void Initialize(const std::string &name, Rectangle rectangle);
     std::vector<SDL_Texture*> Textures;
     std::vector<std::string> Paths;
 
-    SDL_Window* Window;
+    Window GameWindow;
     SDL_Renderer* Render;
-    Vector2 Camera;
 };
 
 #endif
