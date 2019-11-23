@@ -8,12 +8,16 @@ find_package(SDL2_ttf REQUIRED)
 link_libraries(pthread)
 
 include_directories(../include)
+
 add_library(GameEngine
         GameStateManager.cpp
         Rectangle.cpp
         Renderer.cpp
         Timer.cpp
-        Vector2.cpp)
+        Vector2.cpp
+        GameGraphics.cpp
+        Color.cpp
+        Window.cpp)
 
 target_include_directories(GameEngine PUBLIC
         ${SDL2_INCLUDE_DIR}
