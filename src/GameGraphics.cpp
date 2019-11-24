@@ -5,6 +5,7 @@
 #include "GameGraphics.h"
 
 #include <functional>
+#include <algorithm>
 
 struct PriorityDrawable {
     int Layer;
