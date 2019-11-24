@@ -1,13 +1,16 @@
+//
+// Created by jdemoss on 11/23/19.
+//
+
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 
-#include "GameStateManager.h"
-
-class GameGraphics; //TODO create class
+class GameGraphics;
+class GameStateManager;
 
 class GameState {
 public:
-    virtual ~GameState(){}
+    virtual ~GameState() = 0;
     virtual void Update() = 0;
     virtual void Draw(GameGraphics G) {};
     virtual void Pause() {}
