@@ -5,11 +5,11 @@
 #ifndef GAMEGRAPHICS_H
 #define GAMEGRAPHICS_H
 
-#include <vector>
+#include "Color.h"
+#include "Rectangle.h"
 
-#include <Rectangle.h>
+#include <vector>
 #include <SDL_rect.h>
-#include <Color.h>
 #include <SDL_render.h>
 
 struct PriorityDrawable;

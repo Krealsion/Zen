@@ -1,14 +1,16 @@
+//
+// Created by jdemoss on 11/12/19.
+//
+
 #ifndef GAMESTATEMANAGER_H
 #define GAMESTATEMANAGER_H
+
+#include "GameGraphics.h"
 
 #include <vector>
 #include <thread>
 
-// Forward declaration, included in implementation
 class GameState;
-
-class GameGraphics {
-}; //Layer between the user and SDL_Graphics TODO
 
 /**
  * TODO for thread saftey, ensure that Draw does not draw null objects by having an itterator
@@ -22,7 +24,6 @@ public:
     explicit GameStateManager(GameState* InitialState);
     ~GameStateManager();
 
-    //Methods for adding and removing GameStates
     void PushState(GameState* State);
     void PopState();
 

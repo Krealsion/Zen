@@ -1,13 +1,17 @@
+//
+// Created by jdemoss on 11/23/19.
+//
+
 #ifndef RENDERER_H
 #define RENDERER_H
-
-#include <vector>
-#include <string>
-#include <SDL.h>
 
 #include "Rectangle.h"
 #include "Window.h"
 #include "GameGraphics.h"
+
+#include <vector>
+#include <string>
+#include <SDL.h>
 
 /**
  * The renderer is in charge of creating and displaying the window
