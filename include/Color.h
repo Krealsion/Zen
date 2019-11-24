@@ -5,25 +5,23 @@
 #ifndef COLOR_H
 #define COLOR_H
 
-#include <tiff.h>
-
 class Color {
 public:
-    Color(uint8 red, uint8 green, uint8 blue, uint8 alpha = 0);
+    Color(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha = 0);
 
-    void Set(uint8 red, uint8 green, uint8 blue, uint8 alpha = 0);
-    void SetRed(uint8 red);
-    void SetGreen(uint8 green);
-    void SetBlue(uint8 blue);
-    void SetAlpha(uint8 alpha);
+    void Set(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha = 0);
+    void SetRed(unsigned char red);
+    void SetGreen(unsigned char green);
+    void SetBlue(unsigned char blue);
+    void SetAlpha(unsigned char alpha);
 
-    uint8 GetRed() const;
-    uint8 GetGreen() const;
-    uint8 GetBlue() const;
-    uint8 GetAlpha() const;
+    unsigned char GetRed() const;
+    unsigned char GetGreen() const;
+    unsigned char GetBlue() const;
+    unsigned char GetAlpha() const;
 
 private:
-    uint8 Red, Green, Blue, Alpha;
+    unsigned char Red, Green, Blue, Alpha;
 };
 
 #endif //COLOR_H
