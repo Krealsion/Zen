@@ -52,9 +52,9 @@ Rectangle& Rectangle::SetSize(Vector2 Size) {
 }
 
 Rectangle Rectangle::Copy() {
-    return Rectangle(Position, Size);
+    return {Position, Size};
 }
 
 Rectangle Rectangle::DeepCopy() {
-    return Rectangle(Position.Copy(), Size.Copy());
+    return {Position.Copy(), Size.Copy()};
 }
