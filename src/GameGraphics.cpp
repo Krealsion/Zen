@@ -6,6 +6,7 @@
 
 #include <functional>
 #include <algorithm>
+#include <utility>
 
 struct PriorityDrawable {
     int Layer;
@@ -15,29 +16,29 @@ struct PriorityDrawable {
     PriorityDrawable(std::function<void(SDL_Renderer*)> drawFunction, int layer, float sublayer) {
         Layer = layer;
         Sublayer = sublayer;
-        DrawFunction = drawFunction;
+        DrawFunction = std::move(drawFunction);
     }
 };
 
 GameGraphics::GameGraphics() {
-    DrawList = std::vector<PriorityDrawable>();
+    DrawList = std::vector<PriorityDrawable*>();
 }
 
 void GameGraphics::Draw(SDL_Renderer* renderer) {
-    std::sort(DrawList.begin(), DrawList.end(), [&renderer](PriorityDrawable a, PriorityDrawable b) {
-        if (a.Layer == b.Layer) {
-            return a.Sublayer - b.Sublayer;
+    std::sort(DrawList.begin(), DrawList.end(), [&renderer](PriorityDrawable* a, PriorityDrawable* b) {
+        if (a->Layer == b->Layer) {
+            return a->Sublayer - b->Sublayer;
         }
-        return (float) (a.Layer - b.Layer);
+        return (float) (a->Layer - b->Layer);
     });
-    for (const PriorityDrawable& priorityDrawable : DrawList) {
-        priorityDrawable.DrawFunction(renderer);
+    for (const PriorityDrawable* priorityDrawable : DrawList) {
+        priorityDrawable->DrawFunction(renderer);
     }
     DrawList.clear();
 }
 
 void GameGraphics::DrawRectangle(const Rectangle &rectangle, Color color, int layer, float sublayer, bool useCamera) {
-    DrawList.emplace_back(PriorityDrawable([&](SDL_Renderer* renderer) {
+    DrawList.emplace_back(new PriorityDrawable([&](SDL_Renderer* renderer) {
         SetRendererColor(renderer, color);
         SDL_Rect* sdlRect = ToSDLRect(rectangle, useCamera);
         SDL_RenderDrawRect(renderer, sdlRect);
