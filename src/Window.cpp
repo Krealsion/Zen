@@ -5,7 +5,6 @@
 #include "Rectangle.h"
 #include "Window.h"
 
-Window::Window() {}
 Window::Window(const std::string &name, Rectangle WindowRectangle) {
     SdlWindow = SDL_CreateWindow(name.c_str(),
                               (int) WindowRectangle.GetX(), (int) WindowRectangle.GetY(),
