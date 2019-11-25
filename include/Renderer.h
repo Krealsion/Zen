@@ -20,7 +20,6 @@
  */
 class Renderer {
 public:
-    Renderer();
     Renderer(const std::string& name, Rectangle windowRectangle);
     ~Renderer();
 
@@ -34,7 +33,6 @@ public:
     void RenderGameGraphics(GameGraphics gameGraphics);
 
 protected:
-    void Initialize(const std::string &name, Rectangle rectangle);
     std::vector<SDL_Texture*> Textures;
     std::vector<std::string> Paths;
 

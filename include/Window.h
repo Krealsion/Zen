@@ -9,7 +9,6 @@
 
 class Window {
 public:
-    Window();
     Window(const std::string &name, Rectangle WindowRectangle);
     ~Window();
 

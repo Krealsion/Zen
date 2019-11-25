@@ -27,7 +27,7 @@ private:
     static void SetRendererColor(SDL_Renderer* renderer, Color color);
 
     Vector2 Camera;
-    std::vector<PriorityDrawable> DrawList;
+    std::vector<PriorityDrawable*> DrawList;
 };
 
 #endif //GAMEGRAPHICS_H

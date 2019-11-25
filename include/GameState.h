@@ -5,14 +5,15 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 
-class GameGraphics;
+#include "GameGraphics.h"
+
 class GameStateManager;
 
 class GameState {
 public:
-    virtual ~GameState() = 0;
+    virtual ~GameState() = default;
     virtual void Update() = 0;
-    virtual void Draw(GameGraphics G) {};
+    virtual void Draw(GameGraphics &G) = 0;
     virtual void Pause() {}
     virtual void Resume() {}
     virtual void SetGameStateManager(GameStateManager* StateManager){Manager = StateManager;}

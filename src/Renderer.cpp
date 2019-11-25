@@ -6,23 +6,13 @@
 #include <SDL_ttf.h>
 #include <vector>
 
-Renderer::Renderer() {
-    Initialize("", Rectangle());
-}
-
-Renderer::Renderer(const std::string& name, Rectangle windowRectangle) {
-    Initialize(name, windowRectangle);
-}
-
-void Renderer::Initialize(const std::string& name, Rectangle rectangle){
+Renderer::Renderer(const std::string& name, Rectangle windowRectangle) : GameWindow(name, windowRectangle){
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
-    GameWindow = Window(name, rectangle);
     Render = SDL_CreateRenderer(GameWindow.GetWindow() , 0, SDL_RENDERER_ACCELERATED);
     SDL_SetRenderDrawColor(Render, 0xFF, 0xFF, 0xFF, 0x00);
     Paths.clear();
 }
-
 
 Renderer::~Renderer() {
     SDL_DestroyRenderer(Render);

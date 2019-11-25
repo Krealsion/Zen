@@ -5,8 +5,6 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 
-link_libraries(pthread)
-
 add_library(GameEngine
         GameStateManager.cpp
         Rectangle.cpp
@@ -24,6 +22,7 @@ target_include_directories(GameEngine PUBLIC
         ${SDL2_TTF_INCLUDE_DIR})
 
 target_link_libraries(GameEngine
+        pthread
         ${SDL2_LIBRARY}
         ${SDL2_IMAGE_LIBRARIES}
         ${SDL2_TTF_LIBRARIES})

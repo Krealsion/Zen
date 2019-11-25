@@ -94,7 +94,7 @@ Vector2& Vector2::Invert() {
 }
 
 Vector2 Vector2::Copy() {
-    return Vector2(X, Y);
+    return {X, Y};
 }
 
 std::ostream& operator<<(std::ostream& os, const Vector2& v2) {
