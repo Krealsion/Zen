@@ -30,7 +30,7 @@ public:
     SDL_Texture* GetTexture(const std::string &path);
     SDL_Texture* LoadText(const std::string &text, std::string fontName, int size, SDL_Color color);
 
-    void RenderGameGraphics(GameGraphics gameGraphics);
+    void RenderGameGraphics(GameGraphics& gameGraphics);
 
 protected:
     std::vector<SDL_Texture*> Textures;

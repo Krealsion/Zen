@@ -20,7 +20,7 @@ Renderer::~Renderer() {
     Textures.clear();
 }
 
-void Renderer::RenderGameGraphics(GameGraphics gameGraphics) {
+void Renderer::RenderGameGraphics(GameGraphics& gameGraphics) {
     SDL_SetRenderDrawColor(Render, 0, 0, 255, 255);
     SDL_RenderClear(Render);
     gameGraphics.Draw(Render);
