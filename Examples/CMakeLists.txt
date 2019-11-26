@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.13)
 set(CMAKE_CXX_STANDARD 17)
 
+include_directories("../include")
+
 project(TimerExamples)
 link_libraries(pthread)
 add_executable(TimerExamples TimerExamples.cpp ../src/Timer.cpp)

@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "../include/Vector2.h"
+#include "Vector2.h"
 
 int main(){
     Vector2 a;
