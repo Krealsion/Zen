@@ -3,7 +3,7 @@
 #include "GameState.h"
 #include "Timer.h"
 
-GameStateManager::GameStateManager(GameState* InitialState) {
+GameStateManager::GameStateManager(GameState* InitialState) : renderer("Game", Rectangle(20, 20, 400, 400)){
     PushState(InitialState);
     GameRunning = true;
     UpdateThread = std::thread([&]() {
@@ -36,6 +36,7 @@ void GameStateManager::Draw() {
     if (!GameStates.empty()) {
         GameStates.back()->Draw(Graphics);
     }
+    renderer.RenderGameGraphics(Graphics);
 }
 
 void GameStateManager::PushState(GameState* State) {

@@ -6,6 +6,7 @@
 #define GAMESTATEMANAGER_H
 
 #include "GameGraphics.h"
+#include "Renderer.h"
 
 #include <vector>
 #include <thread>
@@ -38,6 +39,7 @@ protected:
     std::thread UpdateThread;
     std::thread DrawThread;
     bool GameRunning;
+    Renderer renderer;
     GameGraphics Graphics;
     std::vector<GameState*> GameStates;
 };
