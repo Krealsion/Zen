@@ -21,6 +21,7 @@ public:
     void Draw(SDL_Renderer* renderer);
 
     void DrawRectangle(const Rectangle &rectangle, Color color, int layer = 1, float sublayer = 1, bool useCamera = true);
+    void FillRectangle(const Rectangle &rectangle, Color color, int layer = 1, float sublayer = 1, bool useCamera = true);
 
 private:
     SDL_Rect* ToSDLRect(Rectangle rectangle, bool useCamera = false);

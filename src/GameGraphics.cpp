@@ -38,11 +38,20 @@ void GameGraphics::Draw(SDL_Renderer* renderer) {
     DrawList.clear();
 }
 
-void GameGraphics::DrawRectangle(const Rectangle &rectangle, Color color, int layer, float sublayer, bool useCamera) {
+void GameGraphics::FillRectangle(const Rectangle &rectangle, Color color, int layer, float sublayer, bool useCamera) {
     DrawList.emplace_back(new PriorityDrawable([=](SDL_Renderer* renderer) {
         SetRendererColor(renderer, color);
         SDL_Rect* sdlRect = ToSDLRect(rectangle, useCamera);
         SDL_RenderFillRect(renderer, sdlRect);
+        delete (sdlRect);
+    }, layer, sublayer));
+}
+
+void GameGraphics::DrawRectangle(const Rectangle &rectangle, Color color, int layer, float sublayer, bool useCamera) {
+    DrawList.emplace_back(new PriorityDrawable([=](SDL_Renderer* renderer) {
+        SetRendererColor(renderer, color);
+        SDL_Rect* sdlRect = ToSDLRect(rectangle, useCamera);
+        SDL_RenderDrawRect(renderer, sdlRect);
         delete (sdlRect);
     }, layer, sublayer));
 }
