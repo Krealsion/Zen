@@ -43,9 +43,9 @@ bool Timer::PeekIsTime() {
 
 double Timer::PeekProgress() {
     if (Paused) {
-        return std::chrono::duration_cast<std::chrono::nanoseconds>(LastUpdate.time_since_epoch()).count() / 1000000.0;
+        return std::chrono::duration_cast<std::chrono::milliseconds>(LastUpdate.time_since_epoch()).count();
     }
-    return std::chrono::duration_cast<std::chrono::nanoseconds>(CurrentTime - LastUpdate).count() / 1000000.0;
+    return std::chrono::duration_cast<std::chrono::milliseconds>(CurrentTime - LastUpdate).count();
 }
 
 double Timer::PeekProgressPercentage() {
@@ -58,11 +58,11 @@ double Timer::GetTimeMultiplier() {
 
 void Timer::SetTimeMultiplier(double TimeMultiplier) {
     if (Paused) {
-        LastUpdate = LastUpdate - std::chrono::nanoseconds((long) (
+        LastUpdate = LastUpdate - std::chrono::nanoseconds((long long) (
                 LastUpdate.time_since_epoch().count() * (1 - (this->TimeMultiplier / TimeMultiplier))));
     } else {
         //Subtract time to set the relative time progress to an equal percentage
-        LastUpdate = CurrentTime - std::chrono::nanoseconds((long) (
+        LastUpdate = CurrentTime - std::chrono::nanoseconds((long long) (
                 (CurrentTime.time_since_epoch().count() - LastUpdate.time_since_epoch().count()) *
                 this->TimeMultiplier / TimeMultiplier));
     }
@@ -87,7 +87,7 @@ void Timer::Resume() {
 }
 
 void Timer::UpdateEffectiveDelay() {
-    EffectiveDelay = std::chrono::microseconds((long)(Delay / TimeMultiplier * 1000));
+    EffectiveDelay = std::chrono::nanoseconds((long long)(Delay / TimeMultiplier * 1000000));
 }
 
 void Timer::SwitchPauseState() {
