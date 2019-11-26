@@ -87,7 +87,7 @@ void Timer::Resume() {
 }
 
 void Timer::UpdateEffectiveDelay() {
-    EffectiveDelay = std::chrono::nanoseconds((long) (Delay / TimeMultiplier * 1000000));
+    EffectiveDelay = std::chrono::microseconds((long)(Delay / TimeMultiplier * 1000));
 }
 
 void Timer::SwitchPauseState() {
