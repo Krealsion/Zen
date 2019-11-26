@@ -14,6 +14,9 @@ GameStateManager::GameStateManager(GameState* InitialState) : renderer("Game", R
         while (IsRunning())
             Draw();
     });
+    while (IsRunning()){
+        SDL_PumpEvents();
+    }
     UpdateThread.join();
     DrawThread.join();
 }
