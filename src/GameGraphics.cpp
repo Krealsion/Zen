@@ -78,6 +78,9 @@ void GameGraphics::DrawOval(const Rectangle& ovalBounds, Color color, int layer,
     DrawList.emplace_back(new PriorityDrawable([=](SDL_Renderer* renderer) {
         SetRendererColor(renderer, color);
         Vector2 center = ovalBounds.GetPosition().Add(ovalBounds.GetSize().Scale(.5));
+        if (useCamera) {
+            center.Add(Camera);
+        }
         double d = 2 * M_PI * sqrt((pow(ovalBounds.GetWidth() / 2, 2) + pow(ovalBounds.GetHeight() / 2, 2)) / 2);
         double step = M_PI / 4 / d;
         for (int i = 0; i < d; i++) {
