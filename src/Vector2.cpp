@@ -33,19 +33,19 @@ Vector2& Vector2::AddY(double Y) {
     return *this;
 }
 
-double Vector2::GetX() {
+double Vector2::GetX() const {
     return this->X;
 }
 
-double Vector2::GetY() {
+double Vector2::GetY() const {
     return this->Y;
 }
 
-int Vector2::GetXInt() {
+int Vector2::GetXInt() const {
     return (int)round(X);
 }
 
-int Vector2::GetYInt() {
+int Vector2::GetYInt() const {
     return (int)round(Y);
 }
 
@@ -67,7 +67,7 @@ Vector2& Vector2::Scale(double Scalar) {
     return *this;
 }
 
-double Vector2::GetMagnitude() {
+double Vector2::GetMagnitude() const {
     return sqrt(X * X + Y * Y);
 }
 
@@ -93,7 +93,7 @@ Vector2& Vector2::Invert() {
     return *this;
 }
 
-Vector2 Vector2::Copy() {
+Vector2 Vector2::Copy() const {
     return {X, Y};
 }
 

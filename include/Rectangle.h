@@ -13,18 +13,18 @@ public:
     Rectangle(double X, double Y, double Width, double Height);
     Rectangle(Vector2 Position, Vector2 Size);
 
-    Vector2 GetPosition();
-    Vector2 GetSize();
-    double GetX();
-    double GetY();
-    double GetWidth();
-    double GetHeight();
-
     Rectangle& SetPosition(Vector2 Position);
     Rectangle& SetSize(Vector2 Size);
 
-    Rectangle Copy();
-    Rectangle DeepCopy();
+    Vector2 GetPosition();
+    Vector2 GetSize();
+    double GetX() const;
+    double GetY() const;
+    double GetWidth() const;
+    double GetHeight() const;
+
+    Rectangle Copy() const;
+    Rectangle DeepCopy() const;
 
 protected:
     Vector2 Position;

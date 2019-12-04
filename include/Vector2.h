@@ -21,13 +21,13 @@ public:
     Vector2& Negate();
     Vector2& Invert();
 
-    double GetX();
-    double GetY();
-    int GetXInt();
-    int GetYInt();
-    double GetMagnitude();
+    double GetX() const;
+    double GetY() const;
+    int GetXInt() const;
+    int GetYInt() const;
+    double GetMagnitude() const;
 
-    Vector2 Copy();
+    Vector2 Copy() const;
 
     friend std::ostream& operator<<(std::ostream& os, const Vector2& v2);
 
