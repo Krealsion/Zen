@@ -23,6 +23,9 @@ public:
     void DrawRectangle(const Rectangle &rectangle, Color color, int layer = 1, float sublayer = 1, bool useCamera = true);
     void FillRectangle(const Rectangle &rectangle, Color color, int layer = 1, float sublayer = 1, bool useCamera = true);
 
+    void DrawOval(const Rectangle &ovalBounds, Color color, int layer = 1, int sublayer = 1, bool useCamera = true);
+    void FillOval(const Rectangle &ovalBounds, Color color, int layer = 1, int sublayer = 1, bool useCamera = true);
+
 private:
     SDL_Rect* ToSDLRect(Rectangle rectangle, bool useCamera = false);
     static void SetRendererColor(SDL_Renderer* renderer, Color color);
