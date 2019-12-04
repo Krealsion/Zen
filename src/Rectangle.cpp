@@ -27,11 +27,11 @@ Rectangle& Rectangle::SetSize(Vector2 Size) {
     return *this;
 }
 
-Vector2 Rectangle::GetPosition() {
+Vector2 Rectangle::GetPosition() const {
     return Position;
 }
 
-Vector2 Rectangle::GetSize() {
+Vector2 Rectangle::GetSize() const {
     return Size;
 }
 

@@ -16,8 +16,8 @@ public:
     Rectangle& SetPosition(Vector2 Position);
     Rectangle& SetSize(Vector2 Size);
 
-    Vector2 GetPosition();
-    Vector2 GetSize();
+    Vector2 GetPosition() const;
+    Vector2 GetSize() const;
     double GetX() const;
     double GetY() const;
     double GetWidth() const;
