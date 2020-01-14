@@ -119,8 +119,21 @@ Vector3& Vector3::Invert() {
     return *this;
 }
 
+Vector3 Vector3::Add(Vector3 a, Vector3 b){
+    return {a.GetX() + b.GetX(), a.GetY() + b.GetY(), a.GetZ() + b.GetZ()};
+}
+
+Vector3 Vector3::Multiply(Vector3 a, Vector3 b) {
+    return {a.GetX() * b.GetX(), a.GetY() * b.GetY(), a.GetZ() * b.GetZ()};
+}
+
+Vector3 Vector3::Scale(Vector3 v, double s) {
+
+    return {v.GetX() * s, v.GetY() * s, v.GetZ() * s};
+}
+
 Vector3 Vector3::CrossProduct(Vector3 a, Vector3 b) {
-    return Vector3(a.Y * b.Z - a.Z * b.Y, a.Z * b.X - a.X * b.Z, a.X * b.Y - a.Y * b.X);
+    return {a.Y * b.Z - a.Z * b.Y, a.Z * b.X - a.X * b.Z, a.X * b.Y - a.Y * b.X};
 }
 
 double Vector3::DotProduct(Vector3 a, Vector3 b) {

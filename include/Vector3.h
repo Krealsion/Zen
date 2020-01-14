@@ -23,6 +23,9 @@ public:
     Vector3& Negate();
     Vector3& Invert();
 
+    static Vector3 Add(Vector3 a, Vector3 b);
+    static Vector3 Multiply(Vector3 a, Vector3 b);
+    static Vector3 Scale(Vector3 v, double s);
     static Vector3 CrossProduct(Vector3 a, Vector3 b);
     static double DotProduct(Vector3 a, Vector3 b);
 
