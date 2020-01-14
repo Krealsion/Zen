@@ -11,6 +11,7 @@ add_library(GameEngine
         Renderer.cpp
         Timer.cpp
         Vector2.cpp
+        Vector3.cpp
         GameGraphics.cpp
         Color.cpp
         Window.cpp)
