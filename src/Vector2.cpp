@@ -8,37 +8,37 @@ Vector2::Vector2() {
     Y = 0;
 }
 
-Vector2::Vector2(double X, double Y) {
-    this->X = X;
-    this->Y = Y;
+Vector2::Vector2(double x, double y) {
+    X = x;
+    Y = y;
 }
 
-Vector2& Vector2::SetX(double X) {
-    this->X = X;
+Vector2& Vector2::SetX(double x) {
+    X = x;
     return *this;
 }
 
-Vector2& Vector2::SetY(double Y) {
-    this->Y = Y;
+Vector2& Vector2::SetY(double y) {
+    Y = y;
     return *this;
 }
 
-Vector2& Vector2::AddX(double X) {
-    this->X += X;
+Vector2& Vector2::AddX(double x) {
+    X += x;
     return *this;
 }
 
-Vector2& Vector2::AddY(double Y) {
-    this->Y += Y;
+Vector2& Vector2::AddY(double y) {
+    Y += y;
     return *this;
 }
 
 double Vector2::GetX() const {
-    return this->X;
+    return X;
 }
 
 double Vector2::GetY() const {
-    return this->Y;
+    return Y;
 }
 
 int Vector2::GetXInt() const {
@@ -61,9 +61,9 @@ Vector2& Vector2::Multiply(Vector2 o) {
     return *this;
 }
 
-Vector2& Vector2::Scale(double Scalar) {
-    X *= Scalar;
-    Y *= Scalar;
+Vector2& Vector2::Scale(double scalar) {
+    X *= scalar;
+    Y *= scalar;
     return *this;
 }
 
