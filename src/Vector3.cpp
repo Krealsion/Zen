@@ -145,6 +145,6 @@ Vector3 Vector3::Copy() const {
 }
 
 std::ostream& operator<<(std::ostream& os, const Vector3& v3) {
-    os << "(" << v3.X << ", " << v3.Y << ")";
+    os << "(" << v3.X << ", " << v3.Y  << ", " << v3.GetZ() << ")";
     return os;
 }
