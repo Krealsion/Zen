@@ -15,19 +15,19 @@ public:
     Vector3& AddX(double X);
     Vector3& AddY(double Y);
     Vector3& AddZ(double Z);
-    Vector3& Add(Vector3 o);
-    Vector3& Multiply(Vector3 o);
+    Vector3& Add(const Vector3& o);
+    Vector3& Multiply(const Vector3& o);
     Vector3& Scale(double Scalar);
     Vector3& Normalize();
     Vector3& Abs();
     Vector3& Negate();
     Vector3& Invert();
 
-    static Vector3 Add(Vector3 a, Vector3 b);
-    static Vector3 Multiply(Vector3 a, Vector3 b);
-    static Vector3 Scale(Vector3 v, double s);
-    static Vector3 CrossProduct(Vector3 a, Vector3 b);
-    static double DotProduct(Vector3 a, Vector3 b);
+    static Vector3 Add(const Vector3& a, const Vector3& b);
+    static Vector3 Multiply(const Vector3& a, const Vector3& b);
+    static Vector3 Scale(const Vector3& v, const double& s);
+    static Vector3 CrossProduct(const Vector3& a, const Vector3& b);
+    static double DotProduct(const Vector3& a, const Vector3& b);
 
     double GetX() const;
     double GetY() const;

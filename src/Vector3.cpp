@@ -69,14 +69,14 @@ int Vector3::GetZInt() const {
     return (int)round(Z);
 }
 
-Vector3& Vector3::Add(Vector3 o) {
+Vector3& Vector3::Add(const Vector3& o) {
     X += o.GetX();
     Y += o.GetY();
     Y += o.GetZ();
     return *this;
 }
 
-Vector3& Vector3::Multiply(Vector3 o) {
+Vector3& Vector3::Multiply(const Vector3& o) {
     X *= o.GetX();
     Y *= o.GetY();
     Z *= o.GetZ();
@@ -119,24 +119,24 @@ Vector3& Vector3::Invert() {
     return *this;
 }
 
-Vector3 Vector3::Add(Vector3 a, Vector3 b){
+Vector3 Vector3::Add(const Vector3 &a, const Vector3& b){
     return {a.GetX() + b.GetX(), a.GetY() + b.GetY(), a.GetZ() + b.GetZ()};
 }
 
-Vector3 Vector3::Multiply(Vector3 a, Vector3 b) {
+Vector3 Vector3::Multiply(const Vector3& a, const Vector3& b) {
     return {a.GetX() * b.GetX(), a.GetY() * b.GetY(), a.GetZ() * b.GetZ()};
 }
 
-Vector3 Vector3::Scale(Vector3 v, double s) {
+Vector3 Vector3::Scale(const Vector3& v, const double& s) {
 
     return {v.GetX() * s, v.GetY() * s, v.GetZ() * s};
 }
 
-Vector3 Vector3::CrossProduct(Vector3 a, Vector3 b) {
+Vector3 Vector3::CrossProduct(const Vector3& a, const Vector3& b) {
     return {a.Y * b.Z - a.Z * b.Y, a.Z * b.X - a.X * b.Z, a.X * b.Y - a.Y * b.X};
 }
 
-double Vector3::DotProduct(Vector3 a, Vector3 b) {
+double Vector3::DotProduct(const Vector3& a, const Vector3& b) {
     return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
 }
 
