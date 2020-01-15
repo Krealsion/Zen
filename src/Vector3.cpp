@@ -9,52 +9,52 @@ Vector3::Vector3() {
     Z = 0;
 }
 
-Vector3::Vector3(double X, double Y, double Z) {
-    this->X = X;
-    this->Y = Y;
-    this->Z = Z;
+Vector3::Vector3(double x,  double y,  double z) {
+    X = x;
+    Y = y;
+    Z = z;
 }
 
-Vector3& Vector3::SetX(double X) {
-    this->X = X;
+Vector3& Vector3::SetX( double x) {
+    X = x;
     return *this;
 }
 
-Vector3& Vector3::SetY(double Y) {
-    this->Y = Y;
+Vector3& Vector3::SetY( double y) {
+    Y = y;
     return *this;
 }
 
-Vector3& Vector3::SetZ(double Z) {
-    this->Z = Z;
+Vector3& Vector3::SetZ( double z) {
+    Z = z;
     return *this;
 }
 
-Vector3& Vector3::AddX(double X) {
-    this->X += X;
+Vector3& Vector3::AddX( double x) {
+    X += x;
     return *this;
 }
 
-Vector3& Vector3::AddY(double Y) {
-    this->Y += Y;
+Vector3& Vector3::AddY( double y) {
+    Y += y;
     return *this;
 }
 
-Vector3& Vector3::AddZ(double Z) {
-    this->Z += Z;
+Vector3& Vector3::AddZ( double z) {
+    Z += z;
     return *this;
 }
 
 double Vector3::GetX() const {
-    return this->X;
+    return X;
 }
 
 double Vector3::GetY() const {
-    return this->Y;
+    return Y;
 }
 
 double Vector3::GetZ() const {
-    return this->Z;
+    return Z;
 }
 
 int Vector3::GetXInt() const {
@@ -83,10 +83,10 @@ Vector3& Vector3::Multiply(const Vector3& o) {
     return *this;
 }
 
-Vector3& Vector3::Scale(double Scalar) {
-    X *= Scalar;
-    Y *= Scalar;
-    Z *= Scalar;
+Vector3& Vector3::Scale(double scalar) {
+    X *= scalar;
+    Y *= scalar;
+    Z *= scalar;
     return *this;
 }
 

@@ -6,18 +6,18 @@
 class Vector3 {
 public:
     Vector3();
-    Vector3(double X, double Y, double Z);
+    Vector3(double x, double y, double z);
 
     //Returns a reference to this object, not a copy
-    Vector3& SetX(double X);
-    Vector3& SetY(double Y);
-    Vector3& SetZ(double Z);
-    Vector3& AddX(double X);
-    Vector3& AddY(double Y);
-    Vector3& AddZ(double Z);
+    Vector3& SetX(double x);
+    Vector3& SetY(double y);
+    Vector3& SetZ(double z);
+    Vector3& AddX(double x);
+    Vector3& AddY(double y);
+    Vector3& AddZ(double z);
     Vector3& Add(const Vector3& o);
     Vector3& Multiply(const Vector3& o);
-    Vector3& Scale(double Scalar);
+    Vector3& Scale(double scalar);
     Vector3& Normalize();
     Vector3& Abs();
     Vector3& Negate();
