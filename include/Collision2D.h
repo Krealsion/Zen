@@ -19,7 +19,7 @@ public:
      * @param points The list of points to turn into a 2D shape
      * @return The lines that the points form
      */
-    std::vector<Line2D> GetLinesFromPoints(std::vector<Vector2> points);
+    std::vector<Line2D> GetLinesFromPoints(const std::vector<Vector2>& points);
     /**
      * This determines if two lines collide with eachother
      * @param l1
@@ -27,6 +27,7 @@ public:
      * @return
      */
     Vector2* GetLineCollision(const Line2D& l1, const Line2D& l2);
+    Rectangle GetBoundingBox(const std::vector<Vector2>& Points);
     /**
      * This determines if two rectangles collide with eachother.
      * This is usually used to speed up collisions by using bounding boxes
@@ -41,7 +42,7 @@ public:
      * @param Set2
      * @return
      */
-    bool CheckAdvancedCollision(std::vector<Line2D> Set1, std::vector<Line2D> Set2);
+    bool CheckAdvancedCollision(const std::vector<Vector2>& Set1, const std::vector<Vector2>& Set2);
     /**
      * This determines if a point in contained inside of a shape,
      * useful for determining if a shape is completely inside the other as well.
