@@ -51,7 +51,7 @@ bool Line2D::SharesDomainRange(const Line2D& l1, const Line2D& l2) {
     }
     return true;
 }
-bool Line2D::CheckValueInDomain(double x) {
+bool Line2D::CheckValueInDomain(double x) const {
     if (x < DomainStart){
         return false;
     }

@@ -13,7 +13,7 @@ public:
     double GetSlope() const;
     double GetIntercept() const;
 
-    bool CheckValueInDomain(double x);
+    bool CheckValueInDomain(double x) const;
     double Evaluate(double x) const;
     bool BoundingCollisionCheck(Line2D o) const;
 
