@@ -10,7 +10,15 @@
 class Line2D {
 public:
     Line2D(Vector2 p1, Vector2 p2);
-    double Evaluate(double x);
+    double GetSlope() const;
+    double GetIntercept() const;
+
+    bool CheckValueInDomain(double x);
+    double Evaluate(double x) const;
+    bool BoundingCollisionCheck(Line2D o) const;
+
+    static bool SharesDomainRange(const Line2D& l1, const Line2D& l2);
+    static bool CheckLinesParallel(const Line2D& l1, const Line2D& l2);
 
 private:
     double DomainStart, DomainEnd;
