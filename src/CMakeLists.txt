@@ -14,7 +14,7 @@ add_library(GameEngine
         Vector3.cpp
         GameGraphics.cpp
         Color.cpp
-        Window.cpp PlaneBounded.cpp)
+        Window.cpp PlaneBounded.cpp Collision2D.cpp Line2D.cpp)
 
 target_include_directories(GameEngine PUBLIC
         ../include
