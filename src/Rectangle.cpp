@@ -16,7 +16,18 @@ Rectangle::Rectangle(Vector2 Position, Vector2 Size) {
     this->Position = Position;
     this->Size = Size;
 }
-
+Rectangle& Rectangle::SetX(double X) {
+    Position.SetX(X);
+}
+Rectangle& Rectangle::SetY(double Y) {
+    Position.SetY(Y);
+}
+Rectangle& Rectangle::SetWidth(double Width) {
+    Size.SetX(Width);
+}
+Rectangle& Rectangle::SetHeight(double Height) {
+    Size.SetY(Height);
+}
 Rectangle& Rectangle::SetPosition(Vector2 Position) {
     this->Position = Position;
     return *this;

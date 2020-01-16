@@ -13,6 +13,10 @@ public:
     Rectangle(double X, double Y, double Width, double Height);
     Rectangle(Vector2 Position, Vector2 Size);
 
+    Rectangle& SetX(double X);
+    Rectangle& SetY(double Y);
+    Rectangle& SetWidth(double Width);
+    Rectangle& SetHeight(double Height);
     Rectangle& SetPosition(Vector2 Position);
     Rectangle& SetSize(Vector2 Size);
 
