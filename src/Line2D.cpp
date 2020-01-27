@@ -5,12 +5,17 @@
 #include "Line2D.h"
 
 Line2D::Line2D(Vector2 p1, Vector2 p2) {
-    Slope = (p2.GetY() - p1.GetY()) / (p2.GetX() - p1.GetX());
-    Intercept = p1.GetY() - p1.GetX() * Slope;
+    if (p1.GetX() != p2.GetX()) {
+        Slope = (p2.GetY() - p1.GetY()) / (p2.GetX() - p1.GetX());
+        Intercept = p1.GetY() - p1.GetX() * Slope;
+    }
     RangeStart = std::min(p1.GetY(), p2.GetY());
     RangeEnd = std::max(p1.GetY(), p2.GetY());
     DomainStart = std::min(p1.GetX(), p2.GetX());
     DomainEnd = std::max(p1.GetX(), p2.GetX());
+}
+bool Line2D::IsUndefined() const{
+    return DomainStart == DomainEnd;
 }
 double Line2D::GetSlope() const {
     return Slope;
