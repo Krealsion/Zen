@@ -6,10 +6,12 @@
 #define LEAVINGTERRA_LINE2D_H
 
 #include "Vector2.h"
+#include "Rectangle.h"
 
 class Line2D {
 public:
     Line2D(Vector2 p1, Vector2 p2);
+    bool IsUndefined() const;
     double GetSlope() const;
     double GetIntercept() const;
 
@@ -19,6 +21,7 @@ public:
 
     static bool SharesDomainRange(const Line2D& l1, const Line2D& l2);
     static bool CheckLinesParallel(const Line2D& l1, const Line2D& l2);
+    static Rectangle* GetSharedBoundingBox(Line2D l1, Line2D l2);
 
 private:
     double DomainStart, DomainEnd;

@@ -68,4 +68,17 @@ bool Line2D::CheckValueInDomain(double x) const {
 bool Line2D::CheckLinesParallel(const Line2D& l1, const Line2D& l2) {
     return l1.Slope == l2.Slope;
 }
+Rectangle* Line2D::GetSharedBoundingBox(Line2D l1, Line2D l2) {
+    double minx = std::max(l1.DomainStart, l2.DomainStart);
+    double maxx = std::min(l1.DomainEnd, l2.DomainEnd);
+    double miny = std::max(l1.RangeStart, l2.RangeStart);
+    double maxy = std::min(l1.RangeEnd, l2.RangeEnd);
+    if (minx > maxx) {
+        return nullptr;
+    }
+    if (miny > maxy) {
+        return nullptr;
+    }
+    return new Rectangle(minx, maxx, miny, maxy);
+}
 
