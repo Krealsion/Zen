@@ -12,14 +12,23 @@ std::vector<Line2D> Collision2D::GetLinesFromPoints(const std::vector<Vector2>& 
     return lines;
 }
 Vector2* Collision2D::GetLineCollision(const Line2D& l1, const Line2D& l2) {
-    if (Line2D::SharesDomainRange(l1, l2)){
-        if (Line2D::CheckLinesParallel(l1, l2)){
-            return nullptr;
+    if (!Line2D::SharesDomainAndRange(l1, l2)){
+        return nullptr;
+    }
+    if (Line2D::CheckLinesParallel(l1, l2)){
+        return nullptr;
+    }
+    if (l1.IsUndefined()){
+        if (l2.IsUndefined()){
+            // TODO get the exact start and end point of the shared undefined line
+//            Rectangle* Line2D::
+            return new Vector2[2]{};
         }
-        double x = (l2.GetIntercept() - l1.GetIntercept()) / (l1.GetSlope() - l2.GetSlope());
-        if (l1.CheckValueInDomain(x) && l2.CheckValueInDomain(x)) {
-            return new Vector2(x, l1.Evaluate(x));
-        }
+    }
+
+    double x = (l2.GetIntercept() - l1.GetIntercept()) / (l1.GetSlope() - l2.GetSlope());
+    if (l1.CheckValueInDomain(x) && l2.CheckValueInDomain(x)) {
+        return new Vector2(x, l1.Evaluate(x));
     }
     return nullptr;
 }
@@ -60,10 +69,32 @@ bool Collision2D::BoundingBoxCollisionCheck(const Rectangle& rect1, const Rectan
     return true;
 }
 bool Collision2D::CheckAdvancedCollision(const std::vector<Vector2>& Set1, const std::vector<Vector2>& Set2) {
+    return !GetPointsOfCollision(Set1, Set2).empty();
+}
+std::vector<Vector2*> Collision2D::GetPointsOfCollision(const std::vector<Vector2>& Set1, const std::vector<Vector2>& Set2){
+    std::vector<Vector2*> collisionPoints;
+    std::vector<Line2D> lineSet1 = GetLinesFromPoints(Set1);
+    std::vector<Line2D> lineSet2 = GetLinesFromPoints(Set2);
     if (BoundingBoxCollisionCheck(GetBoundingBox(Set1), GetBoundingBox(Set2))){
-
+        for (int i = 0; lineSet1.size(); i++){
+            for (int j = 0; j < lineSet2.size(); j++){
+                Vector2* p = GetLineCollision(lineSet1[i], lineSet2[j]);
+                if (p != nullptr){
+                    collisionPoints.push_back(p);
+                }
+            }
+        }
     }
+    return collisionPoints;
 }
 bool Collision2D::CheckPointInside(const Vector2& Point, const std::vector<Line2D>& Lines) {
-    return false;
+    bool Inside = false;    // By default the point is not inside the Function Set
+    for (const Line2D& Line : Lines) {     // For each line in the std::vector<Function>
+        if (Line.CheckValueInDomain(Point.GetX())) {  // Check if the point is within it's domain
+            if (Line.Evaluate(Point.GetX()) > Point.GetY()) {  // If the point is also above the point
+                Inside = !Inside;   // Toggle the "insideness" of the point
+            }
+        }
+    }
+    return Inside;  // Return if the point is inside
 }

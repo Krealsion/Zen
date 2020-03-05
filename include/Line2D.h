@@ -19,7 +19,7 @@ public:
     double Evaluate(double x) const;
     bool BoundingCollisionCheck(Line2D o) const;
 
-    static bool SharesDomainRange(const Line2D& l1, const Line2D& l2);
+    static bool SharesDomainAndRange(const Line2D& l1, const Line2D& l2);
     static bool CheckLinesParallel(const Line2D& l1, const Line2D& l2);
     static Rectangle* GetSharedBoundingBox(Line2D l1, Line2D l2);
 

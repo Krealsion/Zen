@@ -37,6 +37,13 @@ public:
      */
     bool BoundingBoxCollisionCheck(const Rectangle& rect1, const Rectangle& rect2);
     /**
+     * This gets an array of points that correspond to where the intersection of two 2DShapes occured
+     * @param Set1
+     * @param Set2
+     * @return
+     */
+    std::vector<Vector2*> GetPointsOfCollision(const std::vector<Vector2>& Set1, const std::vector<Vector2>& Set2);
+    /**
      * This does the actual determining of if two 2D shapes collide with eachother
      * @param Set1
      * @param Set2
