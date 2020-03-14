@@ -1,97 +1,121 @@
-//
-// Created by jdemoss on 11/4/19.
-//
+#include "timer.h"
 
-#include "Timer.h"
+namespace Zen {
 
-std::chrono::time_point<std::chrono::steady_clock> Timer::CurrentTime = std::chrono::steady_clock::now();
-bool Timer::AutomaticUpdates = true;
+std::chrono::time_point<std::chrono::steady_clock> Timer::current_time = std::chrono::steady_clock::now();
+std::chrono::time_point<std::chrono::steady_clock> Timer::start_time = std::chrono::steady_clock::now();
+bool Timer::automatic_updates = true;
 
-void Timer::UpdateTime() {
-    CurrentTime = std::chrono::steady_clock::now();
+void Timer::update_time() {
+  current_time = std::chrono::steady_clock::now();
 }
 
-void Timer::SetAutomaticUpdates(bool AutomaticUpdates) {
-    Timer::AutomaticUpdates = AutomaticUpdates;
+void Timer::set_automatic_updates(bool automatic_updates) {
+  Timer::automatic_updates = automatic_updates;
 }
 
 Timer::Timer(double Delay) {
-    this->Delay = Delay;
-    TimeMultiplier = 1;
-    UpdateEffectiveDelay();
-    LastUpdate = CurrentTime;
-    Paused = false;
+  this->delay = Delay;
+  time_multiplier = 1;
+  update_effective_delay();
+  last_update = current_time;
+  paused = false;
 }
 
-bool Timer::IsTime() {
-    if (PeekIsTime()) {
-        LastUpdate += EffectiveDelay;
-        return true;
-    }
+bool Timer::is_time() {
+  if (peek_is_time()) {
+    last_update += effective_delay;
+    return true;
+  }
+  return false;
+}
+
+bool Timer::peek_is_time() {
+  if (paused) {
     return false;
+  }
+  if (automatic_updates) {
+    update_time();
+  }
+  return std::chrono::duration_cast<std::chrono::nanoseconds>(current_time - last_update) >= effective_delay;
 }
 
-bool Timer::PeekIsTime() {
-    if (Paused) {
-        return false;
-    }
-    if (AutomaticUpdates) {
-        UpdateTime();
-    }
-    return std::chrono::duration_cast<std::chrono::nanoseconds>(CurrentTime - LastUpdate) >= EffectiveDelay;
+double Timer::peek_progress() {
+  if (paused) {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(last_update.time_since_epoch()).count();
+  }
+  return std::chrono::duration_cast<std::chrono::milliseconds>(current_time - last_update).count();
 }
 
-double Timer::PeekProgress() {
-    if (Paused) {
-        return std::chrono::duration_cast<std::chrono::milliseconds>(LastUpdate.time_since_epoch()).count();
-    }
-    return std::chrono::duration_cast<std::chrono::milliseconds>(CurrentTime - LastUpdate).count();
+double Timer::peek_progress_pecentage() {
+  return peek_progress() / std::chrono::duration_cast<std::chrono::nanoseconds>(effective_delay).count() * 1000000;
 }
 
-double Timer::PeekProgressPercentage() {
-    return PeekProgress() / std::chrono::duration_cast<std::chrono::nanoseconds>(EffectiveDelay).count() * 1000000;
+double Timer::get_time_multiplier() {
+  return time_multiplier;
 }
 
-double Timer::GetTimeMultiplier() {
-    return TimeMultiplier;
+void Timer::set_time_multiplier(double TimeMultiplier) {
+  if (paused) {
+    last_update = last_update - std::chrono::nanoseconds((long long) (
+            last_update.time_since_epoch().count() * (1 - (this->time_multiplier / TimeMultiplier))));
+  } else {
+    //Subtract time to set the relative time progress to an equal percentage
+    last_update = current_time - std::chrono::nanoseconds((long long) (
+            (current_time.time_since_epoch().count() - last_update.time_since_epoch().count()) *
+            this->time_multiplier / TimeMultiplier));
+  }
+  this->time_multiplier = TimeMultiplier;
+  update_effective_delay();
 }
 
-void Timer::SetTimeMultiplier(double TimeMultiplier) {
-    if (Paused) {
-        LastUpdate = LastUpdate - std::chrono::nanoseconds((long long) (
-                LastUpdate.time_since_epoch().count() * (1 - (this->TimeMultiplier / TimeMultiplier))));
-    } else {
-        //Subtract time to set the relative time progress to an equal percentage
-        LastUpdate = CurrentTime - std::chrono::nanoseconds((long long) (
-                (CurrentTime.time_since_epoch().count() - LastUpdate.time_since_epoch().count()) *
-                this->TimeMultiplier / TimeMultiplier));
-    }
-    this->TimeMultiplier = TimeMultiplier;
-    UpdateEffectiveDelay();
+bool Timer::is_paused() {
+  return paused;
 }
 
-bool Timer::IsPaused() {
-    return Paused;
+void Timer::pause() {
+  if (!paused) {
+    switch_pause_states();
+  }
 }
 
-void Timer::Pause() {
-    if (!Paused) {
-        SwitchPauseState();
-    }
+void Timer::resume() {
+  if (paused) {
+    switch_pause_states();
+  }
 }
 
-void Timer::Resume() {
-    if (Paused) {
-        SwitchPauseState();
-    }
+void Timer::update_effective_delay() {
+  effective_delay = std::chrono::nanoseconds((long long) (delay / time_multiplier * 1000000));
 }
 
-void Timer::UpdateEffectiveDelay() {
-    EffectiveDelay = std::chrono::nanoseconds((long long)(Delay / TimeMultiplier * 1000000));
+void Timer::switch_pause_states() {
+  paused = !paused;
+  last_update = current_time - last_update.time_since_epoch();
 }
-
-void Timer::SwitchPauseState() {
-    Paused = !Paused;
-    LastUpdate = CurrentTime - LastUpdate.time_since_epoch();
+double Timer::get_current_time() {
+  if (automatic_updates)
+    update_time();
+  return current_time.time_since_epoch().count();
 }
-
+double Timer::get_nanoseconds_since_started() {
+  if (automatic_updates)
+    update_time();
+  return std::chrono::duration_cast<std::chrono::nanoseconds>((current_time - start_time.time_since_epoch()).time_since_epoch()).count();
+}
+double Timer::get_microseconds_since_started() {
+  if (automatic_updates)
+    update_time();
+  return get_nanoseconds_since_started() / 1000;
+}
+double Timer::get_milliseconds_since_started() {
+  if (automatic_updates)
+    update_time();
+  return get_microseconds_since_started() / 1000;
+}
+double Timer::get_seconds_since_started() {
+  if (automatic_updates)
+    update_time();
+  return get_milliseconds_since_started() / 1000;
+}
+}

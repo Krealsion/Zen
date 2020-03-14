@@ -40,15 +40,15 @@ Given that high precision is required, chrono will be used to keep track of nano
 
 Avoiding all threads and sleeps will allow to keep the use case very simple and easy to use.
 
-Avoid internal measurements of time by keeping a static "CurrentTime" - Posed a challenge for time modification, as you need to work off a modified delay instead of modified internal time, causing a switch. Lower space complexity, larger time complexity(rederiving effective delay instead of modifying tick speed)
+Avoid internal measurements of time by keeping a static "current_time" - Posed a challenge for time modification, as you need to work off a modified delay instead of modified internal time, causing a switch. Lower space complexity, larger time complexity(rederiving effective delay instead of modifying tick speed)
 
-Pausing posed some potential space waste, as the duration passed since last tick was not compatable with the time_point stored in LastUpdate, which is ideal for storing the time passed when paused, but it was possible to set the time_point to contain just the duration passed
+Pausing posed some potential space waste, as the duration passed since last tick was not compatable with the time_point stored in last_update, which is ideal for storing the time passed when paused, but it was possible to set the time_point to contain just the duration passed
 
-**My favorite problem** Setting a new time modifier was difficult as time passed was not being tracked against a static delay. A dynamic "Effective Delay" made switching the TimeMultiplier not a percentage consistent change when simply updating the multiplier. In order to keep it consistent, the function now also either adds or subtracts time from the "LastUpdate" tracker to maintain the correct percentage when the TimeMultiplier is updated.
+**My favorite problem** Setting a new time modifier was difficult as time passed was not being tracked against a static delay. A dynamic "Effective delay" made switching the time_multiplier not a percentage consistent change when simply updating the multiplier. In order to keep it consistent, the function now also either adds or subtracts time from the "last_update" tracker to maintain the correct percentage when the time_multiplier is updated.
 
 An option for manual calls was added, though still under consideration, as it just adds another static field and adds a very small amount of time complexity overall, while only supporting a minor edge case for overall project implementation styles
 #### Solution:
-The final product is an object that has configurable initial delay, TimeMultiplier, and pause status while adding no new threads or sleep counters to the program. In order to implement a small overhead is necessary once followed by, a declaration and definition for a timer, and a simple one line implementation around the code to be run. e.g.
+The final product is an object that has configurable initial delay, time_multiplier, and pause status while adding no new threads or sleep counters to the program. In order to implement a small overhead is necessary once followed by, a declaration and definition for a timer, and a simple one line implementation around the code to be run. e.g.
 
 ```c++
 #include <iostream>
@@ -59,8 +59,8 @@ int main() {
     std::cout << "Liftoff in " << std::flush;
     Timer t = Timer(1000);
     for (int i = 5;;) {
-        Timer::UpdateTime();    //This line updates the global current time REQUIRED
-        if (t.IsTime()) {
+        Timer::update_time();    //This line updates the global current time REQUIRED
+        if (t.is_time()) {
             if (i == 0)
                 break;
             std::cout << i-- << "... " << std::flush;
@@ -75,13 +75,13 @@ int main() {
 
 -Nanosecond tracking is overkill for the intended use of the timer
 
--Keeping the EffectiveDelay as a separate variable would help time complexity, at the expense of space complexity(probably shouldn't care about an extra few bytes)
+-Keeping the effective_delay as a separate variable would help time complexity, at the expense of space complexity(probably shouldn't care about an extra few bytes)
 ___
-## 1 11/12/2019: GameStates and Management
+## 1 11/12/2019: Game States and Management
 #### Problem: 
 Encapsulation as well as different states/menus of a game are crucially important for readability
 #### Requirements: 
-GameStates should be easy to create, and simple to implement.
+Game States should be easy to create, and simple to implement.
 
 The StateManager should only support the previous requirements, and otherwise work in the backend.
 
@@ -89,31 +89,31 @@ The StateManager should support multithreaded updates and drawing, as to allow f
 #### Dev Notes: 
 The general format for GameState and GameStateManager came from previous projects utilizing similar functionality, one in c++ and one in Java, and boy did I really underestimate the importance of having those classes be simple in c++ comparatively to Java. Thus the general structure and requirements were created.
 
-GameStates should only really need to have one method which is update. If the user just wants a black splash page (which will be the default draw beneath every frame) they can do so. The only requirement for a GameState is that it provides some functionality, and has some way to either exit the game, add a new gamestate, or pop itself out of the gamestate queue.
+Game States should only really need to have one method which is update. If the user just wants a black splash page (which will be the default draw beneath every frame) they can do so. The only requirement for a GameState is that it provides some functionality, and has some way to either exit the game, add a new gamestate, or pop itself out of the gamestate queue.
 
-Having the threads access IsRunning to determine if they should continue allowed for adding a join clause after the creation in the constructor, essentially encapsulating their functionality to their respective tasks, and alleviating the need for any kind of external wait to have the game run.
+Having the threads access is_running to determine if they should continue allowed for adding a join clause after the creation in the constructor, essentially encapsulating their functionality to their respective tasks, and alleviating the need for any kind of external wait to have the game run.
 #### Solution: 
 The current solution meets all the requirements necessary, and is designed to scale. The GameState has multiple virtual methods that allows for easy access to functionality used behind the scenes (pause, resume, update, draw, ect) which do not get called by the user.
 ```c++
 #include <iostream>
-#include <GameStateManager.h>
-#include <GameState.h>
+#include <game_state_manager.h>
+#include <game_state.h>
 
 class Gs : public GameState {
 public:
     int i;
-    void Update(){
+    void update(){
         std::cout << i++ << std::endl;
         if (i == 10){
-            Manager->Exit();
+            state_manager->exit();
         }
     }
 };
 
 
 int main() {
-    GameState* S = new Gs();
-    GameStateManager Sm = GameStateManager(S);
+    GameState* state = new Gs();
+    GameStateManager state_manger = GameStateManager(state);
     return 0;
 }
 ```
@@ -122,3 +122,20 @@ int main() {
 This ended up being a rather basic implementation which will most assuredly need expansion upon later.
 
 One potential problem is regarding popping states. When a GameState is popped, there may be a need to sync up the threads to prevent deleting data that is in use.
+
+## 2 3/8/2020: Functions and Function Maps
+
+#### Problem:
+The root cause of this idea is a sense of randomness, controlled of course, around the idea of emission fields around objects. Emission fields are fields of light around specific objects. These fields sometimes have flickering, which is great for like fire, and old light bulbs. 
+
+#### Requirements:
+The solution needs to be an interface that can support various different functions, single, or multiple inputs, and even have one or two dimensional outputs.
+
+#### Dev Notes:
+
+
+#### Solution:
+(Short description of the solution, as well as an example of the use case if applicable)
+
+#### Final Thoughts:
+(List of potential future problems or improvements, or important information)

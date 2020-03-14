@@ -1,8 +1,0 @@
-//
-// Created by jdemoss on 1/27/20.
-//
-
-#ifndef LEAVINGTERRA_COLLISION3D_H
-#define LEAVINGTERRA_COLLISION3D_H
-
-#endif //LEAVINGTERRA_COLLISION3D_H
