@@ -1,6 +1,6 @@
 #pragma once
 
-#include "src/graphics/game_graphics.h"
+#include "graphics/game_graphics.h"
 
 namespace Zen {
 class GameStateManager;
@@ -13,10 +13,10 @@ public:
 
   virtual void pause() {}
   virtual void resume() {}
-  virtual void set_game_state_manager(GameStateManager* state_manager) { this->state_manager = state_manager; }
+  virtual void set_game_state_manager(GameStateManager* state_manager) { this->_state_manager = state_manager; }
 
 protected:
-  GameStateManager* state_manager = nullptr;
+  GameStateManager* _state_manager = nullptr;
 };
 }
 

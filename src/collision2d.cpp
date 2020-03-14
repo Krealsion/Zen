@@ -3,56 +3,61 @@
 
 namespace Zen {
 
-std::vector<Line2D> Collision2D::GetLinesFromPoints(const std::vector<Vector2>& points) {
+std::vector<Line2D> Collision2D::get_lines_from_points(const std::vector<Vector2>& points) {
   std::vector<Line2D> lines;
+  lines.reserve(points.size());
   for (int i = 0; i < points.size(); i++) {
     lines.emplace_back(points[i], points[(i + 1) % points.size()]);
   }
   return lines;
 }
-Vector2* Collision2D::GetLineCollision(const Line2D& l1, const Line2D& l2) {
+
+std::vector<Vector2> Collision2D::get_line_collision(const Line2D& l1, const Line2D& l2) {
+  std::vector<Vector2> points;
   if (!Line2D::shares_domain_and_range(l1, l2)) {
-    return nullptr;
+    return points;
   }
   if (Line2D::check_lines_parallel(l1, l2)) {
-    return nullptr;
+    return points;
   }
   if (l1.is_undefined()) {
     if (l2.is_undefined()) {
-      // TODO get the exact start and end point of the shared undefined line
-//            Rectangle* Line2D::
-      return new Vector2[2]{};
+      points.emplace_back(l1.get_domain_start(), std::max(l1.get_range_start(), l2.get_range_start()));
+      points.emplace_back(l1.get_domain_start(), std::min(l1.get_range_end(), l2.get_range_end()));
+      return points;
     }
   }
 
   double x = (l2.get_intercept() - l1.get_intercept()) / (l1.get_slope() - l2.get_slope());
   if (l1.check_value_in_domain(x) && l2.check_value_in_domain(x)) {
-    return new Vector2(x, l1.evaluate(x));
+    points.emplace_back(x, l1.evaluate(x));
   }
-  return nullptr;
+  return points;
 }
-Rectangle Collision2D::GetBoundingBox(const std::vector<Vector2>& points) {  // Creates a rectangle that encompasses all given points
-  Rectangle Rect; // Rectangle that holds new Bounding Box
+
+Rectangle Collision2D::get_bounding_box(const std::vector<Vector2>& points) {  // Creates a rectangle that encompasses all given points
+  Rectangle rect; // Rectangle that holds new Bounding Box
   if (points.empty()) {
-    return Rect;
+    return rect;
   }
-  double MinX = points[0].get_x(); // Sets the initial values to the first point
-  double MaxX = points[0].get_x();
-  double MinY = points[0].get_y();
-  double MaxY = points[0].get_y();
+  auto min_x = points[0].get_x(); // Sets the initial values to the first point
+  auto max_x = points[0].get_x();
+  auto min_y = points[0].get_y();
+  auto max_y = points[0].get_y();
   for (int i = 1; i < points.size(); i++) { // Goes through each point except the one all values are based on
-    MinX = std::min(MinX, points[i].get_x()); // ensure correct min value
-    MaxX = std::max(MaxX, points[i].get_x()); // ensure correct max value
-    MinY = std::min(MinY, points[i].get_y());
-    MaxY = std::max(MaxY, points[i].get_y());
+    min_x = std::min(min_x, points[i].get_x()); // ensure correct min value
+    max_x = std::max(max_x, points[i].get_x()); // ensure correct max value
+    min_y = std::min(min_y, points[i].get_y());
+    max_y = std::max(max_y, points[i].get_y());
   }
-  Rect.set_x(MinX); // Set the X position to the minimum X value found
-  Rect.set_y(MinY); // Set the Y position to the minimum Y value found
-  Rect.set_width(MaxX - MinX);  // Set the width of the rectangle to the max X value found minus the min X value found
-  Rect.set_height(MaxY - MinY); // Set the height of the rectangle to the max Y value found minus the min Y value found
-  return Rect; // Return the bounding Rectangle
+  rect.set_x(min_x); // Set the X position to the minimum X value found
+  rect.set_y(min_y); // Set the Y position to the minimum Y value found
+  rect.set_width(max_x - min_x);  // Set the width of the rectangle to the max X value found minus the min X value found
+  rect.set_height(max_y - min_y); // Set the height of the rectangle to the max Y value found minus the min Y value found
+  return rect; // Return the bounding Rectangle
 }
-bool Collision2D::BoundingBoxCollisionCheck(const Rectangle& rect1, const Rectangle& rect2) {
+
+bool Collision2D::bounding_box_collision_check(const Rectangle& rect1, const Rectangle& rect2) {
   if (rect1.get_x() + rect1.get_width() < rect2.get_x()) {
     return false;
   }
@@ -67,34 +72,51 @@ bool Collision2D::BoundingBoxCollisionCheck(const Rectangle& rect1, const Rectan
   }
   return true;
 }
-bool Collision2D::CheckAdvancedCollision(const std::vector<Vector2>& set1, const std::vector<Vector2>& set2) {
-  return !GetPointsOfCollision(set1, set2).empty();
+
+bool Collision2D::check_advanced_collision(const std::vector<Vector2>& set_1, const std::vector<Vector2>& set_2) {
+  return !get_points_of_collision(set_1, set_2).empty();
 }
-std::vector<Vector2*> Collision2D::GetPointsOfCollision(const std::vector<Vector2>& set1, const std::vector<Vector2>& set2) {
-  std::vector<Vector2*> collisionPoints;
-  std::vector<Line2D> lineSet1 = GetLinesFromPoints(set1);
-  std::vector<Line2D> lineSet2 = GetLinesFromPoints(set2);
-  if (BoundingBoxCollisionCheck(GetBoundingBox(set1), GetBoundingBox(set2))) {
-    for (const auto & i : lineSet1) {
-      for (const auto & j : lineSet2) {
-        Vector2* p = GetLineCollision(i, j);
-        if (p != nullptr) {
-          collisionPoints.push_back(p);
-        }
+
+std::vector<Vector2> Collision2D::get_points_of_collision(const std::vector<Vector2>& set_1, const std::vector<Vector2>& set_2) {
+  std::vector<Vector2> collision_points;
+  std::vector<Line2D> line_set_1 = get_lines_from_points(set_1);
+  std::vector<Line2D> line_set_2 = get_lines_from_points(set_2);
+  if (bounding_box_collision_check(get_bounding_box(set_1), get_bounding_box(set_2))) {
+    for (const auto & i : line_set_1) {
+      for (const auto & j : line_set_2) {
+        auto p = get_line_collision(i, j);
+        collision_points.insert(collision_points.end(), p.begin(), p.end());
       }
     }
   }
-  return collisionPoints;
+  return collision_points;
 }
-bool Collision2D::CheckPointInside(const Vector2& point, const std::vector<Line2D>& lines) {
-  bool Inside = false;    // By default the point is not inside the Function Set
-  for (const Line2D& Line : lines) {     // For each line in the std::vector<Function>
-    if (Line.check_value_in_domain(point.get_x())) {  // Check if the point is within it's domain
-      if (Line.evaluate(point.get_x()) > point.get_y()) {  // If the point is also above the point
-        Inside = !Inside;   // Toggle the "insideness" of the point
+
+bool Collision2D::check_point_inside_shape(const Vector2& point, const std::vector<Line2D>& lines) {
+  auto inside = false;    // By default the point is not inside the Function Set
+  for (const Line2D& line : lines) {     // For each line in the std::vector<Function>
+    if (line.check_value_in_domain(point.get_x())) {  // Check if the point is within it's domain
+      if (line.evaluate(point.get_x()) > point.get_y()) {  // If the point is also above the point
+        inside = !inside;   // Toggle the "insideness" of the point
       }
     }
   }
-  return Inside;  // Return if the point is inside
+  return inside;  // Return if the point is inside
+}
+
+bool Collision2D::bounding_collision_check(Line2D l1, Line2D l2) const {
+  if (l1.get_domain_start()> l1.get_domain_end()) {
+    return false;
+  }
+  if (l1.get_domain_end()< l2.get_domain_start()) {
+    return false;
+  }
+  if (l1.get_range_start()> l2.get_range_end()) {
+    return false;
+  }
+  if (l1.get_range_end()< l2.get_range_start()) {
+    return false;
+  }
+  return true;
 }
 }

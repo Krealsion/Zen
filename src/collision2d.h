@@ -14,15 +14,15 @@ public:
    * @param points The list of points to turn into a 2D shape
    * @return The lines that the points form
    */
-  std::vector<Line2D> GetLinesFromPoints(const std::vector<Vector2>& points);
+  std::vector<Line2D> get_lines_from_points(const std::vector<Vector2>& points);
   /**
    * This determines if two lines collide with eachother
    * @param l1
    * @param l2
    * @return
    */
-  Vector2* GetLineCollision(const Line2D& l1, const Line2D& l2);
-  Rectangle GetBoundingBox(const std::vector<Vector2>& points);
+  std::vector<Vector2> get_line_collision(const Line2D& l1, const Line2D& l2);
+  Rectangle get_bounding_box(const std::vector<Vector2>& points);
   /**
    * This determines if two rectangles collide with eachother.
    * This is usually used to speed up collisions by using bounding boxes
@@ -30,21 +30,21 @@ public:
    * @param rect2
    * @return
    */
-  bool BoundingBoxCollisionCheck(const Rectangle& rect1, const Rectangle& rect2);
+  bool bounding_box_collision_check(const Rectangle& rect1, const Rectangle& rect2);
   /**
    * This gets an array of points that correspond to where the intersection of two 2DShapes occured
-   * @param set1
-   * @param set2
+   * @param set_1
+   * @param set_2
    * @return
    */
-  std::vector<Vector2*> GetPointsOfCollision(const std::vector<Vector2>& set1, const std::vector<Vector2>& set2);
+  std::vector<Vector2> get_points_of_collision(const std::vector<Vector2>& set_1, const std::vector<Vector2>& set_2);
   /**
    * This does the actual determining of if two 2D shapes collide with eachother
-   * @param set1
-   * @param set2
+   * @param set_1
+   * @param set_2
    * @return
    */
-  bool CheckAdvancedCollision(const std::vector<Vector2>& set1, const std::vector<Vector2>& set2);
+  bool check_advanced_collision(const std::vector<Vector2>& set_1, const std::vector<Vector2>& set_2);
   /**
    * This determines if a point in contained inside of a shape,
    * useful for determining if a shape is completely inside the other as well.
@@ -52,7 +52,8 @@ public:
    * @param lines
    * @return
    */
-  bool CheckPointInside(const Vector2& point, const std::vector<Line2D>& lines);
+  bool check_point_inside_shape(const Vector2& point, const std::vector<Line2D>& lines);
+  bool bounding_collision_check(Line2D l1, Line2D l2) const;
 };
 }
 
