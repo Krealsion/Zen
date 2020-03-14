@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "Timer.h"
+#include "timer.h"
 
 int main() {
   long x = 0;

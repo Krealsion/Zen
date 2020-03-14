@@ -4,7 +4,6 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
-#include <vector>
 
 namespace Zen {
 Renderer::Renderer(const std::string& name, Rectangle window_rectangle) : game_window(name, window_rectangle) {

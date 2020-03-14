@@ -1,7 +1,7 @@
 #include "game_state_manager.h"
 
 #include "game_state.h"
-#include "../timer.h"
+#include "timer.h"
 
 namespace Zen {
 
