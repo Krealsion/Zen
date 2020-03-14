@@ -93,26 +93,31 @@ void Timer::_switch_pause_states() {
   _paused = !_paused;
   _last_update = _current_time - _last_update.time_since_epoch();
 }
+
 double Timer::get_current_time() {
   if (_automatic_updates)
     update_time();
   return _current_time.time_since_epoch().count();
 }
+
 double Timer::get_nanoseconds_since_started() {
   if (_automatic_updates)
     update_time();
   return std::chrono::duration_cast<std::chrono::nanoseconds>((_current_time - _start_time.time_since_epoch()).time_since_epoch()).count();
 }
+
 double Timer::get_microseconds_since_started() {
   if (_automatic_updates)
     update_time();
   return get_nanoseconds_since_started() / 1000;
 }
+
 double Timer::get_milliseconds_since_started() {
   if (_automatic_updates)
     update_time();
   return get_microseconds_since_started() / 1000;
 }
+
 double Timer::get_seconds_since_started() {
   if (_automatic_updates)
     update_time();
