@@ -1,56 +1,54 @@
-//
-// Created by jdemoss on 11/6/19.
-//
-
 #include <iostream>
-#include "timer.h"
+#include <timer.h>
+
+using namespace Zen;
 
 int main() {
-  long x = 0;
-  Timer t = Timer(1000);
-  Timer t2 = Timer(20);
-  while (x < 5) {
-    Timer::UpdateTime();
-    if (t2.IsTime()) {
+  auto x = 0;
+  auto timer1 = Timer(1000);
+  auto timer2 = Timer(20);
+  while (x < 3) {
+    Timer::update_time();
+    if (timer2.is_time()) {
       //Toggle the pause state every 20ms
-      if (t.IsPaused()) {
-        t.Resume();
+      if (timer1.is_paused()) {
+        timer1.resume();
       } else {
-        t.Pause();
+        timer1.pause();
       }
     }
-    std::cout << t.PeekProgressPercentage() << std::endl;
-    if (t.IsTime()) {
+    std::cout << timer1.peek_progress_pecentage() << std::endl;
+    if (timer1.is_time()) {
       x += 1;
       //Decrease the speed of the timer, effectively adding 1 second every loop
-      t.SetTimeMultiplier((double) 1 / (double) (x + 1));
+      timer1.set_time_multiplier((double) 1 / (double) (x + 1));
       std::cout << x << std::endl;
-      if (t2.IsPaused()) {
-        t2.Resume();
+      if (timer2.is_paused()) {
+        timer2.resume();
       } else {
-        t2.Pause();
+        timer2.pause();
       }
     }
   }
 
   // TESTING std::chrono::steady_clock::now() FOR PERFORMANCE
-  long LoopCount = 100000000;
+  auto loop_count = 100000000;
   auto start = std::chrono::steady_clock::now();
-  for (long i = 0; i < LoopCount; i++) {
+  for (long i = 0; i < loop_count; i++) {
     //Empty loop to count loop time cost
   }
   auto end = std::chrono::steady_clock::now();
   auto time = end - start;
-  double NsPerLoop = ((std::chrono::duration_cast<std::chrono::nanoseconds>(time).count()) / (double) LoopCount);
+  double ns_per_loop = ((std::chrono::duration_cast<std::chrono::nanoseconds>(time).count()) / (double) loop_count);
 
   start = std::chrono::steady_clock::now();
-  for (long i = 0; i < LoopCount; i++) {
-    auto time = std::chrono::steady_clock::now();
+  for (long i = 0; i < loop_count; i++) {
+    auto time_test = std::chrono::steady_clock::now();
   }
   end = std::chrono::steady_clock::now();
   time = end - start;
   std::cout << "Each std::chrono::steady_clock::now() call took roughly " <<
-            ((std::chrono::duration_cast<std::chrono::nanoseconds>(time).count()) / (double) LoopCount - NsPerLoop)
+            ((std::chrono::duration_cast<std::chrono::nanoseconds>(time).count()) / (double) loop_count - ns_per_loop)
             << "ns.";
   return 0;
 }

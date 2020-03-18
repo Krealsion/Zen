@@ -1,22 +1,20 @@
-//
-// Created by jdemoss on 11/7/19.
-//
-
 #include <iostream>
-#include "vector2.h"
+#include <types/vector2.h>
+
+using namespace Zen;
 
 int main() {
-  Zen::Vector2 a;
+  Vector2 a;
   std::cout << a << std::endl;
-  Zen::Vector2 b = Zen::Vector2(10, 5);
+  Vector2 b = Vector2(10, 5);
   std::cout << b << std::endl;
-  b.add(b).add(b);
+  b.add(b * 2);
   std::cout << b << std::endl;
   //Use copy in order to preserve data
   std::cout << b.copy().normalize() << std::endl;
   std::cout << b << std::endl;
   std::cout << b.invert() << std::endl;
   std::cout << b << std::endl;
-  Zen::Vector2 c = Zen::Vector2(-1, 0);
+  Vector2 c = Vector2(-1, 0);
   std::cout << b.copy().multiply(c).normalize() << std::endl;
 }
