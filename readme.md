@@ -1,14 +1,16 @@
-This is a Game Engine for c++ designed to be an exceptionally easy to use layer between the programmer and SDL2.
+Zen is a game engine that is designed to be exceptionally easy to use by adding numerous tools for the programmer, without taking any abilities away.
 
-The use of this engine is to allow for quicker development of games by using easy to manage Game States that can be easily created and plugged in to play. These game_states will also have access to a bunch of useful drawing methods in a consistent and stable environment.
+This engine is not supposed to be a replacement for c++ development, but rather a powerful addition that can easily be modified, tweaked, and improved for different projects.
 
-The Engine also makes use of Multi-Threading to split the update and draw method functionality, allowing for a smoother framerate.
+It does so by giving a strong base, which is a GameState management system, letting the programmer jump right into making a game, rather than setting up a window, a renderer, a update cycle, and so on.
+
+It also makes use of multi-threading, although rudimentary, to separate out drawing and updates. (Eventually to use hardware acceleration as well)
 
 ## How to Use
 
-# CMAKE
+### CMake:
 
-In order to implement this GameEngine, you will need to add it to the CMakeLists of the project you are building
+In order to implement Zen, you will need to add it to the CMakeLists of the project you are building
 
 An example CMakeLists.txt file is:
 ```cmake
