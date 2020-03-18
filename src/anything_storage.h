@@ -43,8 +43,6 @@ namespace Zen {
  * any_double.set_f(&get_current_double);
  * where get_current_double is a method with header:
  *   double get_current_double();
- *
- *
  */
 template<typename T>
 class AnythingStorage {
@@ -53,9 +51,13 @@ private:
   void* data = nullptr;
   std::function<T(void*, void*)>* conversion_function = nullptr;
   void* conversion_data = nullptr;
-  T constant = T();
+  T constant = T(); // NOTE: Class T must have a default constructor
 
 public:
+  AnythingStorage() {
+    set_c(T());
+  }
+
   operator T() {
     return get_value();
   }
@@ -77,29 +79,21 @@ public:
   template<typename anythingthatconvertstoT>
   void set_c(anythingthatconvertstoT data) {
     _clean();
-    try {
-      constant = T(data);
-      get_val = new std::function<T(void*)>([](void* data) -> T {
-        return *(static_cast<T*>(data));
-      });
-      this->data = (void*) (&constant);
-    } catch (std::exception& e) {
-
-    }
+    constant = T(data);
+    get_val = new std::function<T(void*)>([](void* data) -> T {
+      return *(static_cast<T*>(data));
+    });
+    this->data = (void*) (&constant);
   }
 
   template<typename anythingthatconvertstoT>
   void set(anythingthatconvertstoT& data) {
     _clean();
-    try {
-      T data_test = T(data);
-      get_val = new std::function<T(void*)>([](void* data) -> T {
-        return T(*(static_cast<anythingthatconvertstoT*>(data)));
-      });
-      this->data = (void*) (&data);
-    } catch (std::exception& e) {
-
-    }
+    T data_test = T(data);
+    get_val = new std::function<T(void*)>([](void* data) -> T {
+      return T(*(static_cast<anythingthatconvertstoT*>(data)));
+    });
+    this->data = (void*) (&data);
   }
 
   template<typename anythingthatconvertstoTthroughafunction>
@@ -116,16 +110,12 @@ public:
 
   void set_f(T (* funct)()) {
     _clean();
-    try {
-      T type_test = funct();
-      get_val = new std::function<T(void*)>([](void* data) -> T {
-        typedef T (* fptr)();
-        return reinterpret_cast<fptr>(reinterpret_cast<long long>(data))();
-      });
-      this->data = (void*) (*funct);
-    } catch (std::exception& e) {
-
-    }
+    T type_test = funct();
+    get_val = new std::function<T(void*)>([](void* data) -> T {
+      typedef T (* fptr)();
+      return reinterpret_cast<fptr>(reinterpret_cast<long long>(data))();
+    });
+    this->data = (void*) (*funct);
   }
 
   T get_value() {
