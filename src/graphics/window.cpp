@@ -32,38 +32,38 @@ void Window::set_y(int new_y) {
 }
 
 int Window::get_x() {
-  int CurrentX;
-  SDL_GetWindowPosition(sdl_window, &CurrentX, nullptr);
-  return CurrentX;
+  int current_x;
+  SDL_GetWindowPosition(sdl_window, &current_x, nullptr);
+  return current_x;
 }
 
 int Window::get_y() {
-  int CurrentY;
-  SDL_GetWindowPosition(sdl_window, nullptr, &CurrentY);
-  return CurrentY;
+  int current_y;
+  SDL_GetWindowPosition(sdl_window, nullptr, &current_y);
+  return current_y;
 }
 
 void Window::set_height(int new_height) {
-  int OldWidth;
-  SDL_GetWindowSize(sdl_window, &OldWidth, nullptr);
-  SDL_SetWindowSize(sdl_window, OldWidth, new_height);
+  int old_width;
+  SDL_GetWindowSize(sdl_window, &old_width, nullptr);
+  SDL_SetWindowSize(sdl_window, old_width, new_height);
 }
 
 void Window::set_width(int new_width) {
-  int OldHeight;
-  SDL_GetWindowSize(sdl_window, nullptr, &OldHeight);
-  SDL_SetWindowSize(sdl_window, new_width, OldHeight);
+  int old_height;
+  SDL_GetWindowSize(sdl_window, nullptr, &old_height);
+  SDL_SetWindowSize(sdl_window, new_width, old_height);
 }
 
 int Window::get_height() {
-  int CurrentHeight;
-  SDL_GetWindowSize(sdl_window, nullptr, &CurrentHeight);
-  return CurrentHeight;
+  int current_height;
+  SDL_GetWindowSize(sdl_window, nullptr, &current_height);
+  return current_height;
 }
 
 int Window::get_width() {
-  int CurrentWidth;
-  SDL_GetWindowSize(sdl_window, &CurrentWidth, nullptr);
-  return CurrentWidth;
+  int current_width;
+  SDL_GetWindowSize(sdl_window, &current_width, nullptr);
+  return current_width;
 }
 }
