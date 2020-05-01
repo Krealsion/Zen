@@ -19,6 +19,8 @@ public:
 
   Vector2 get_position() const;
   Vector2 get_size() const;
+  Vector2& get_position_mutable();
+  Vector2& get_size_mutable();
   double get_x() const;
   double get_y() const;
   double get_width() const;
@@ -27,7 +29,21 @@ public:
   Rectangle copy() const;
   Rectangle deep_copy() const;
 
+  void validate() {
+    _invalidated = false;
+  }
+
+  void invalidate() {
+    _invalidated = true;
+  }
+
+  bool is_valid() {
+    return _invalidated;
+  }
+
 protected:
+  bool _invalidated = false;
+
   Vector2 _position;
   Vector2 _size;
 };

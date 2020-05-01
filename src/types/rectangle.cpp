@@ -69,4 +69,10 @@ Rectangle Rectangle::copy() const {
 Rectangle Rectangle::deep_copy() const {
   return {_position.copy(), _size.copy()};
 }
+Vector2& Rectangle::get_position_mutable() {
+  return _position;
+}
+Vector2& Rectangle::get_size_mutable() {
+  return _size;
+}
 }

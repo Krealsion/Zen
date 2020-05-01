@@ -91,6 +91,7 @@ public:
     _clean();
     T data_test = T(data);
     get_val = new std::function<T(void*)>([](void* data) -> T {
+      // anythingthatconvertstoT can only live within this lambda
       return T(*(static_cast<anythingthatconvertstoT*>(data)));
     });
     this->data = (void*) (&data);

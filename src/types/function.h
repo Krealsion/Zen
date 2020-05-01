@@ -24,15 +24,19 @@ public:
     return get(last_x);
   }
 
+  double spread(double num, double min_percent = 0) {
+    double spread = num * (1 - min_percent);
+    if (spread < 0) {
+      spread -= min_percent;
+    } else {
+      spread += min_percent;
+    }
+    return spread;
+  }
+
   double rand(double min_percent = 0) {
     double zero_to_one = (double) std::rand() / RAND_MAX;
-    double spread_from_zero = zero_to_one * (1 - min_percent);
-    if (spread_from_zero < 0) {
-      spread_from_zero -= min_percent;
-    } else {
-      spread_from_zero += min_percent;
-    }
-    return spread_from_zero;
+    return spread(zero_to_one, min_percent);
   }
 
   double rand_neg_to_pos_one(double min_percent = 0) {
@@ -45,6 +49,7 @@ public:
     }
     return spread_from_zero;
   }
+
 
   void gen_to(double x) {
     if (points.empty()) {

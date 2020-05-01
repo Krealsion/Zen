@@ -24,8 +24,6 @@ public:
   Vector3& negate();
   Vector3& invert();
 
-  static Vector3 add(const Vector3& a, const Vector3& b);
-  static Vector3 multiply(const Vector3& a, const Vector3& b);
   static Vector3 scale(const Vector3& v, const double& s);
   static Vector3 cross_product(const Vector3& a, const Vector3& b);
   static double dot_product(const Vector3& a, const Vector3& b);
@@ -41,6 +39,19 @@ public:
   Vector3 copy() const;
 
   friend std::ostream& operator<<(std::ostream& os, const Vector3& v3);
+
+  Vector3 operator +(const Vector3& o) const {
+    return {o.get_x() + get_x(), o.get_y() + get_y(), o.get_z() + get_z()};
+  }
+  Vector3 operator -(const Vector3& o) const {
+    return {o.get_x() - get_x(), o.get_y() - get_y(), o.get_z() - get_z()};
+  }
+  Vector3 operator *(const double& d) const {
+    return {get_x() * d, get_y() * d, get_z() * d};
+  }
+  Vector3 operator *(const Vector3& o) const {
+    return {o.get_x() * get_x(), o.get_y() * get_y(), o.get_z() * get_z()};
+  }
 
 protected:
   double _x, _y, _z;

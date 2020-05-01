@@ -1,12 +1,13 @@
 #pragma once
 
+#include "game_graphics.h"
 #include "types/rectangle.h"
 #include "window.h"
-#include "game_graphics.h"
+
+#include <SDL.h>
 
 #include <vector>
 #include <string>
-#include <SDL.h>
 #include <map>
 
 namespace Zen {
@@ -15,6 +16,10 @@ namespace Zen {
  * as well as any rendering of objects to the window
  * TODO split texture loading and creation into a separate class
  */
+ /**
+  * The engine should be able to handle multiple windows at once
+  * each renderer needs its own window
+  */
 class Renderer {
 public:
   Renderer(const std::string& name, Rectangle window_rectangle);
@@ -36,7 +41,7 @@ public:
 protected:
   std::map<std::string, SDL_Texture*> _texture_map;
 
-  Window game_window;
-  SDL_Renderer* renderer;
+  Window _game_window;
+  SDL_Renderer* _renderer;
 };
 }

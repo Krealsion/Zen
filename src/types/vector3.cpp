@@ -121,14 +121,6 @@ Vector3& Vector3::invert() {
   return *this;
 }
 
-Vector3 Vector3::add(const Vector3& a, const Vector3& b) {
-  return {a.get_x() + b.get_x(), a.get_y() + b.get_y(), a.get_z() + b.get_z()};
-}
-
-Vector3 Vector3::multiply(const Vector3& a, const Vector3& b) {
-  return {a.get_x() * b.get_x(), a.get_y() * b.get_y(), a.get_z() * b.get_z()};
-}
-
 Vector3 Vector3::scale(const Vector3& v, const double& s) {
 
   return {v.get_x() * s, v.get_y() * s, v.get_z() * s};

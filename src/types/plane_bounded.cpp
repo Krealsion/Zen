@@ -15,6 +15,6 @@ PlaneBounded::PlaneBounded(const std::vector<Vector3>& planar_points) {
 }
 
 Vector3 PlaneBounded::planar_normal(const Vector3& a, const Vector3& b, const Vector3& c) {
-  return Vector3::cross_product(Vector3::add(b, Vector3::scale(a, -1)), Vector3::add(c, Vector3::scale(a, -1)));
+  return Vector3::cross_product(b + a * -1.0,c + a * -1);
 }
 }

@@ -32,6 +32,46 @@ public:
 
   friend std::ostream& operator<<(std::ostream& os, const Vector2& v2);
 
+  Vector2 operator *(const Vector2& o) const {
+    return Vector2(get_x() * o.get_x(), get_y() * o.get_y());
+  }
+
+  Vector2 operator *(const double& d) const {
+    return Vector2(get_x() * d, get_y() * d);
+  }
+
+  Vector2 operator +(const Vector2& o) const {
+    return Vector2(get_x() + o.get_x(), get_y() + o.get_y());
+  }
+
+  Vector2 operator -(const Vector2& o) const {
+    return Vector2(get_x() - o.get_x(), get_y() - o.get_y());
+  }
+
+  Vector2& operator+=(const Vector2& rhs) {
+    _x += rhs.get_x();
+    _y += rhs.get_y();
+    return *this;
+  }
+
+  Vector2& operator*=(const Vector2& rhs) {
+    _x *= rhs.get_x();
+    _y *= rhs.get_y();
+    return *this;
+  }
+
+  Vector2& operator*=(double scale) {
+    _x *= scale;
+    _y *= scale;
+    return *this;
+  }
+
+  Vector2& operator-=(const Vector2& rhs) {
+    _x -= rhs.get_x();
+    _y -= rhs.get_y();
+    return *this;
+  }
+
 protected:
   double _x, _y;
 };
