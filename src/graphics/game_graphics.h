@@ -33,8 +33,8 @@ public:
   bool get_clear_before_draw() { return _clear_before_draw; }
 
 private:
-  SDL_Rect* _to_sdl_rect(const Rectangle& rectangle, bool use_camera = false);
-  SDL_Point* _to_sdl_point(const Vector2& point, bool use_camera = false);
+  std::unique_ptr<SDL_Rect> _to_sdl_rect(const Rectangle& rectangle, bool use_camera = false);
+  std::unique_ptr<SDL_Point> _to_sdl_point(const Vector2& point, bool use_camera = false);
   static SDL_RendererFlip _to_sdl_render_flip(const std::pair<bool, bool>& flips);
   static void _set_color(SDL_Renderer* renderer, Color color);
 
