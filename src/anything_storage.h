@@ -126,36 +126,36 @@ public:
   }
 
   template<typename function_convertable_to_T>
-  void set(function_convertable_to_T& object, T (* conversion)(function_convertable_to_T)) {
+  void set(function_convertable_to_T* object, T (* conversion)(function_convertable_to_T)) {
     _clean();
     _conversion_function = new std::function<T(void*, void*)>([](void* function_data, void* stored_data) -> T {
       auto function_pointer = reinterpret_cast<T (*)(function_convertable_to_T) > (function_data);
       return (*function_pointer)(*(static_cast<function_convertable_to_T*>(stored_data)));
     });
-    _data = (void*) (&object);
-    _conversion_data = (void*) (*conversion);
-  }
-
-  template<typename function_convertable_to_T, typename function_type>
-  void set(function_convertable_to_T& object, function_type function) {
-    _clean();
-    _conversion_function = new std::function<T(void*, void*)>([](void* function_data, void* stored_data) -> T {
-      auto function_pointer = reinterpret_cast<function_type*>(function_data);
-      return (*function_pointer)(*(static_cast<function_convertable_to_T*>(stored_data)));
-    });
-    _data = (void*) (&object);
-    _conversion_data = (void*) (*function);
+    _data = (void*) (object);
+    _conversion_data = (void*) (&conversion);
   }
 
   template<typename function_convertable_to_T, typename an_output_that_can_be_T>
-  void set(function_convertable_to_T& object, an_output_that_can_be_T (* conversion)(function_convertable_to_T)) {
+  void set(function_convertable_to_T* object, an_output_that_can_be_T (* conversion)(function_convertable_to_T)) {
     _clean();
     _conversion_function = new std::function<T(void*, void*)>([](void* function_data, void* stored_data) -> T {
       auto function_pointer = reinterpret_cast<an_output_that_can_be_T (*)(function_convertable_to_T) > (function_data);
       return T(function_pointer(*(static_cast<function_convertable_to_T*>(stored_data))));
     });
-    _data = (void*) (&object);
-    _conversion_data = (void*) (*conversion);
+    _data = (void*) (object);
+    _conversion_data = (void*) (&conversion);
+  }
+
+  template<typename function_convertable_to_T, typename function_type>
+  void set(function_convertable_to_T* object, function_type function) {
+    _clean();
+    _conversion_function = new std::function<T(void*, void*)>([](void* function_data, void* stored_data) -> T {
+      auto function_pointer = reinterpret_cast<function_type*>(function_data);
+      return (*function_pointer)(*(static_cast<function_convertable_to_T*>(stored_data)));
+    });
+    _data = (void*) (object);
+    _conversion_data = (void*) (&function);
   }
 
   T get_value() {
