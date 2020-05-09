@@ -9,3 +9,6 @@ add_executable(TimerExamples timer_examples.cpp ../src/timer.cpp)
 
 project(Vector2Examples)
 add_executable(Vector2Examples vector2_examples.cpp ../src/types/vector2.cpp)
+
+project(AnythingStorageExamples)
+add_executable(AnythingStorageExamples anything_storage_examples.cpp ../src/anything_storage.h)
