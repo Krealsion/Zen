@@ -121,7 +121,7 @@ int main() {
 #### Final Thoughts:
 This ended up being a rather basic implementation which will most assuredly need expansion upon later.
 
-One potential problem is regarding popping states. When a GameState is popped, there may be a need to sync up the threads to prevent deleting data that is in use.
+One potential problem is regarding popping states. When a GameState is popped, there may be a need to sync up the threads to prevent deleting _data that is in use.
 
 ## 2 3/8/2020: Functions and Function Maps
 
@@ -129,13 +129,62 @@ One potential problem is regarding popping states. When a GameState is popped, t
 The root cause of this idea is a sense of randomness, controlled of course, around the idea of emission fields around objects. Emission fields are fields of light around specific objects. These fields sometimes have flickering, which is great for like fire, and old light bulbs. 
 
 #### Requirements:
-The solution needs to be an interface that can support various different functions, single, or multiple inputs, and even have one or two dimensional outputs.
+The solution needs to be an interface that can support various different functions, single, or multiple inputs, and even have a variety of outputs.
+Inputs need to be arbitrary, but also use the original type provided.
+Functions should not require specific definitions for every type it want's to support.
+Functions should be able to be chained, but again, not specifically known
 
 #### Dev Notes:
+This ended up becoming a bit more of a 'var' type class solution rather than a function class solution. While this does give a very different approach then originally intended, it solves the problem wonderfully and dynamically.
 
+This will allow the functions to define their inputs in one way, and then let them be set directly by the user. The function can use the inputs in the way the function needs to, and get an output. The functions can also define an explicit conversion to their output type to allow them to be chained easily.
 
 #### Solution:
-(Short description of the solution, as well as an example of the use case if applicable)
+AnythingStorage(name up for changing), is a storage solution that can define a type as an output. For instance, AnythingStorage<double>. This defines an object that can store anything, but will only provide a double value out. You can set this in a variety of ways, 4 to be exact:
+1). Setting to a constant
+```
+obj = 10.0f; 
+```
+```
+obj.set(10.0f);
+```
+
+2). Setting to a pointer
+```
+obj = new double(10); 
+```
+```
+obj.set(new double(10)); 
+```
+NOTE: AnythingStorage does not delete data when it is done, this is purely and example of what is possible (don't do this please)
+    
+3). Setting to a function that gives the output type
+```
+obj = &get_double;
+```
+```
+obj = &Zen::Timer::get_current_time;
+```
+
+4). Setting to object/function pair that gives: the output type OR another type of object that can implicitly or explicity convert to the output type OR a lambda that fufills either previous requirements
+```
+obj.set(new string("123"), &get_double_from_string);
+```
+```
+obj.set(new string("123"), &get_int_from_string);
+```
+```
+obj.set(new string("123"), [](const std::string& s) {
+    return std::stod(s); // Note: stod can't be used directly because of default parameters causing mismatched function headers
+});
+```
+NOTE: This is only for objects that will be continually updated, as if it is a constant, just convert and pass using option 1
+
+ALSO SEE:
+`anything_storage_examples.cpp` in the `examples` folder for a good example of how a function can be created and used.
 
 #### Final Thoughts:
-(List of potential future problems or improvements, or important information)
+This is probably the coolest thing I've ever built, and has gone through quite a few iterations. While I am very happy with how this turned out, I am sure it will go through a few more before I am confident it is set in stone. 
+
+Something that is currently not being done, and likely will be added in the future is catching memory access errors. Currently it is the job of the user to ensure that the AnythingStorages aren't storing pointers to invalid data. 
+
