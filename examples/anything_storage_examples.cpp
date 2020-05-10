@@ -35,7 +35,7 @@ int main() {
 
   std::string num_string = "123";
 //adder.a = 90;
-  adder.b.set(&num_string, [](const std::string& s) { // Pointer set (will continuously update)
+  adder.b.set(&num_string, [](const std::string& s) -> double { // Pointer set (will continuously update)
     return std::stod(s);
   });
   std::cout << adder.get_val() << std::endl;
@@ -43,7 +43,7 @@ int main() {
   num_string = "444"; // Updates value when getting val from adder
   std::cout << adder.get_val() << std::endl;
 
-  adder.b.set(&num_string, [](const std::string& s) { // similar set, but returns int, which can convert into double
+  adder.b.set(&num_string, [](const std::string& s) -> int { // similar set, but returns int, which can convert into double
     return std::stoi(s);
   });
   std::cout << adder.get_val() << std::endl;
