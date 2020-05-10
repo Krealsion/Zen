@@ -140,7 +140,7 @@ This ended up becoming a bit more of a 'var' type class solution rather than a f
 This will allow the functions to define their inputs in one way, and then let them be set directly by the user. The function can use the inputs in the way the function needs to, and get an output. The functions can also define an explicit conversion to their output type to allow them to be chained easily.
 
 #### Solution:
-AnythingStorage(name up for changing), is a storage solution that can define a type as an output. For instance, AnythingStorage<double>. This defines an object that can store anything, but will only provide a double value out. You can set this in a variety of ways, 4 to be exact:
+VarStorage, is a storage solution that can define a type as an output. For instance, VarStorage<double>. This defines an object that can store anything, but will only provide a double value out. You can set this in a variety of ways, 4 to be exact:
 1). Setting to a constant
 ```
 obj = 10.0f; 
@@ -156,7 +156,7 @@ obj = new double(10);
 ```
 obj.set(new double(10)); 
 ```
-NOTE: AnythingStorage does not delete data when it is done, this is purely and example of what is possible (don't do this please)
+NOTE: VarStorage does not delete data when it is done, this is purely and example of what is possible (don't do this please)
     
 3). Setting to a function that gives the output type
 ```
@@ -181,10 +181,10 @@ obj.set(new string("123"), [](const std::string& s) {
 NOTE: This is only for objects that will be continually updated, as if it is a constant, just convert and pass using option 1
 
 ALSO SEE:
-`anything_storage_examples.cpp` in the `examples` folder for a good example of how a function can be created and used.
+`var_storage_examples.cpp` in the `examples` folder for a good example of how a function can be created and used.
 
 #### Final Thoughts:
-This is probably the coolest thing I've ever built, and has gone through quite a few iterations. While I am very happy with how this turned out, I am sure it will go through a few more before I am confident it is set in stone. 
+This is an interesting solution to the problem given that it doesn't immediately address the problem. It provides a very good framework on how to solve it, while also being useful for many other situations.
 
-Something that is currently not being done, and likely will be added in the future is catching memory access errors. Currently it is the job of the user to ensure that the AnythingStorages aren't storing pointers to invalid data. 
+Something that is currently not being done, and likely will be added in the future is catching memory access errors. Currently it is the job of the user to ensure that the VarStorages aren't storing pointers to invalid data. 
 

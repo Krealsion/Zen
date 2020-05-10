@@ -4,7 +4,7 @@
 
 namespace Zen {
 /*
- * Anything storage is a kind of smart storage object that can house many different
+ * VarStorage is a kind of smart storage object that can house many different
  * objects that give an expected result.
  *
  * The purpose of this is to be a concept of a pointer, while allowing diverse
@@ -12,42 +12,42 @@ namespace Zen {
  * keeping as much code and specification off of the user.
  *
  * How to use:
- * First, declare an AnythingStorage with a type specifier.
+ * First, declare an VarStorage with a type specifier.
  * e.g.
- * AnythingStorage<double> any_double;
+ * VarStorage<double> var_double;
  *
  * Now you can set it in a variety of ways:
  *
  * 1). Setting to a constant
- * any_double = 10.0f;
- * any_double.set(10.0f);
+ * var_double = 10.0f;
+ * var_double.set(10.0f);
  *
  * 2). Setting to a pointer
- * any_double = new double(10);
- * any_double.set(new double(10));
- * NOTE: AnythingStorage does not delete data when it is done, this is purely and example of what is possible (don't do this please)
+ * var_double = new double(10);
+ * var_double.set(new double(10));
+ * NOTE: VarStorage does not delete data when it is done, this is purely and example of what is possible (don't do this please)
  *
  * 3). Setting to a function that gives the output type
- * any_double = &get_double;
- * any_double = &Zen::Timer::get_current_time;
+ * var_double = &get_double;
+ * var_double = &Zen::Timer::get_current_time;
  *
  * 4). Setting to object/function pair that gives:
  * The output type OR another type of object that can implicitly or explicitly convert to the output type OR a lambda that fufills either previous requirements
- * any_double.set(new string("123"), &get_double_from_string);
- * any_double.set(new string("123"), &get_int_from_string);
- * any_double.set(new string("123"), [](const std::string& s) {
+ * var_double.set(new string("123"), &get_double_from_string);
+ * var_double.set(new string("123"), &get_int_from_string);
+ * var_double.set(new string("123"), [](const std::string& s) {
  *     return std::stod(s); // Note: stod can't be used directly because of default parameters causing mismatched function headers
  * });
  * NOTE: This is only for objects that will be continually updated, as if it is a constant, just convert and pass using option 1
  */
 template<typename T>
-class AnythingStorage {
+class VarStorage {
 private:
   T _constant = T(); // NOTE: Class T must have a default constructor
   std::function<T()> _get_val;
 
 public:
-  AnythingStorage() {
+  VarStorage() {
     *this = T();
   }
 
@@ -56,13 +56,13 @@ public:
   }
 
   template<typename type>
-  friend std::ostream& operator<<(std::ostream& os, AnythingStorage<type>& obj) {
+  friend std::ostream& operator<<(std::ostream& os, VarStorage<type>& obj) {
     os << obj.get_value();
     return os;
   }
 
   template<typename convertable_to_T>
-  AnythingStorage<T>& operator=(const convertable_to_T& object) {
+  VarStorage<T>& operator=(const convertable_to_T& object) {
     _constant = object;
     _get_val = std::function<T()>([this]() -> T {
       return _constant;
@@ -71,7 +71,7 @@ public:
   }
 
   template<typename convertable_to_T>
-  AnythingStorage<T>& operator=(convertable_to_T* object) {
+  VarStorage<T>& operator=(convertable_to_T* object) {
     T data_test = T(*object);
     _get_val = std::function<T()>([object]() -> T {
       return T(object);
@@ -79,7 +79,7 @@ public:
     return *this;
   }
 
-  AnythingStorage<T>& operator=(T (* funct)()) {
+  VarStorage<T>& operator=(T (* funct)()) {
     T type_test = funct();
     _get_val = std::function<T()>(funct);
     return *this;

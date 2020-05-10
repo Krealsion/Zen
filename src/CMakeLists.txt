@@ -6,7 +6,7 @@ find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 
 add_library(Zen
-        anything_storage.h
+        var_storage.h
         timer.cpp
         graphics/renderer.cpp
         graphics/game_graphics.cpp
