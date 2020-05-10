@@ -1,4 +1,4 @@
-#include <anything_storage.h>
+#include <var_storage.h>
 #include <iostream>
 #include <timer.h>
 
@@ -6,8 +6,8 @@ using namespace Zen;
 
 class FunctionAdd {
 public:
-  AnythingStorage<double> a;
-  AnythingStorage<double> b;
+  VarStorage<double> a;
+  VarStorage<double> b;
 
   double get_val() {
     return double(*this);
