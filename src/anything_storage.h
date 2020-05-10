@@ -16,56 +16,35 @@ namespace Zen {
  * e.g.
  * AnythingStorage<double> any_double;
  *
- * Now you can set it in a variety of ways!
+ * Now you can set it in a variety of ways:
  *
- * Set Constant:
- * Used for non stored variables, or local variables. Just stores the value
- * e.g.
- * any_double.set_c(1.34);
- * any_double.set_c(10);
+ * 1). Setting to a constant
+ * any_double = 10.0f;
+ * any_double.set(10.0f);
  *
- * Set Reference:
- * Used to store references to objects that can be implicitly casted to the given type
- * e.g.
- *   any_double.set(a_variable_that_can_cast_to_double);
+ * 2). Setting to a pointer
+ * any_double = new double(10);
+ * any_double.set(new double(10));
+ * NOTE: AnythingStorage does not delete data when it is done, this is purely and example of what is possible (don't do this please)
  *
- * Set Reference with Function:
- * Sometimes what you want to set it to can't be implicitly casted,
- * but can be converted using a function, this is for that.
- * e.g.
- * any_double.set(my_string, &get_double_from_string);
- * where get_double_from_string is a method with header:
- *   double get_double_from_string(std::string input);
+ * 3). Setting to a function that gives the output type
+ * any_double = &get_double;
+ * any_double = &Zen::Timer::get_current_time;
  *
- * Set Function:
- * Used to just be a function that returns a value of a given type
- * e.g.
- * any_double.set_f(&get_current_double);
- * where get_current_double is a method with header:
- *   double get_current_double();
+ * 4). Setting to object/function pair that gives:
+ * The output type OR another type of object that can implicitly or explicitly convert to the output type OR a lambda that fufills either previous requirements
+ * any_double.set(new string("123"), &get_double_from_string);
+ * any_double.set(new string("123"), &get_int_from_string);
+ * any_double.set(new string("123"), [](const std::string& s) {
+ *     return std::stod(s); // Note: stod can't be used directly because of default parameters causing mismatched function headers
+ * });
+ * NOTE: This is only for objects that will be continually updated, as if it is a constant, just convert and pass using option 1
  */
 template<typename T>
 class AnythingStorage {
 private:
-  std::function<T(void*)>* _get_val = nullptr; // Turns data into output type
-  std::function<T(void* /* pointer to a function */, void* /* pointer to data */)>* _conversion_function = nullptr; // Turns conversion_data and data into output type
-
-  void* _data = nullptr; // pointer to data
-  void* _conversion_data = nullptr; // pointer to a function
-
-  // This is never directly referenced, as the _constant memory address will only be used as a storage _data points to
   T _constant = T(); // NOTE: Class T must have a default constructor
-
-  void _clean() {
-    if (_get_val != nullptr) { // If this is a raw value function
-      delete _get_val;
-      _get_val = nullptr;
-    }
-    if (_conversion_function != nullptr) {
-      delete _conversion_function;
-      _conversion_function = nullptr;
-    }
-  }
+  std::function<T()> _get_val;
 
 public:
   AnythingStorage() {
@@ -84,33 +63,25 @@ public:
 
   template<typename convertable_to_T>
   AnythingStorage<T>& operator=(const convertable_to_T& object) {
-    _clean();
-    _constant = T(object); // Store a copy
-    _get_val = new std::function<T(void*)>([](void* stored_data) -> T {
-      return *(static_cast<T*>(stored_data));
+    _constant = object;
+    _get_val = std::function<T()>([this]() -> T {
+      return _constant;
     });
-    _data = (void*)(&_constant);
     return *this;
   }
 
   template<typename convertable_to_T>
   AnythingStorage<T>& operator=(convertable_to_T* object) {
-    _clean();
     T data_test = T(*object);
-    _get_val = new std::function<T(void*)>([](void* stored_data) -> T {
-      return T(*(static_cast<convertable_to_T*>(stored_data)));
+    _get_val = std::function<T()>([object]() -> T {
+      return T(object);
     });
-    _data = (void*)(object);
     return *this;
   }
 
   AnythingStorage<T>& operator=(T (* funct)()) {
-    _clean();
     T type_test = funct();
-    _get_val = new std::function<T(void*)>([](void* stored_data) -> T {
-      return reinterpret_cast<T (*)()>(reinterpret_cast<long long>(stored_data))();
-    });
-    _data = (void*)(*funct);
+    _get_val = std::function<T()>(funct);
     return *this;
   }
 
@@ -128,44 +99,22 @@ public:
     *this = function;
   }
 
-  template<typename function_convertable_to_T>
-  void set(function_convertable_to_T* object, T (* conversion)(function_convertable_to_T)) {
-    _clean();
-    _conversion_function = new std::function<T(void*, void*)>([](void* function_data, void* stored_data) -> T {
-      auto function_pointer = reinterpret_cast<T (*)(function_convertable_to_T)> (function_data);
-      return (*function_pointer)(*(static_cast<function_convertable_to_T*>(stored_data)));
-    });
-    _data = (void*)(object);
-    _conversion_data = (void*)(&conversion);
-  }
-
   template<typename function_convertable_to_T, typename function_output_that_can_be_T>
   void set(function_convertable_to_T* object, function_output_that_can_be_T (* conversion)(function_convertable_to_T)) {
-    _clean();
-    _conversion_function = new std::function<T(void*, void*)>([](void* function_data, void* stored_data) -> T {
-      auto function_pointer = reinterpret_cast<function_output_that_can_be_T (*)(function_convertable_to_T)> (function_data);
-      return T(function_pointer(*(static_cast<function_convertable_to_T*>(stored_data))));
+    _get_val = std::function<T()>([object, conversion]() -> T {
+      return conversion(*object);
     });
-    _data = (void*)(object);
-    _conversion_data = (void*)(&conversion);
   }
 
   template<typename function_convertable_to_T, typename lambda_function>
   void set(function_convertable_to_T* object, lambda_function function) {
-    _clean();
-    _conversion_function = new std::function<T(void*, void*)>([](void* function_data, void* stored_data) -> T {
-      auto function_pointer = reinterpret_cast<lambda_function*>(function_data);
-      return (*function_pointer)(*(static_cast<function_convertable_to_T*>(stored_data)));
+    _get_val = std::function<T()>([object, function]() -> T {
+      return function(*object);
     });
-    _data = (void*)(object);
-    _conversion_data = (void*)(&function);
   }
 
   T get_value() {
-    if (_data == nullptr) return T();
-    if (_conversion_function != nullptr)
-      return (*_conversion_function)(_conversion_data, _data);
-    return (*_get_val)(_data);
+    return _get_val();
   }
 };
 }

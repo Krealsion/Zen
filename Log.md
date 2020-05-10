@@ -166,7 +166,7 @@ obj = &get_double;
 obj = &Zen::Timer::get_current_time;
 ```
 
-4). Setting to object/function pair that gives: the output type OR another type of object that can implicitly or explicity convert to the output type OR a lambda that fufills either previous requirements
+4). Setting to object/function pair that gives: the output type OR another type of object that can implicitly or explicitly convert to the output type OR a lambda that fufills either previous requirements
 ```
 obj.set(new string("123"), &get_double_from_string);
 ```

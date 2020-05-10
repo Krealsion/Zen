@@ -1,5 +1,6 @@
 #include <anything_storage.h>
 #include <iostream>
+#include <timer.h>
 
 using namespace Zen;
 
@@ -52,4 +53,21 @@ int main() {
 //adder.b = 123
   std::cout << adder.get_val() << std::endl;
 
+  double start = Zen::Timer::get_current_time() / 1000000;
+  for (int l = 0; l < 10000000; l++) { // Aka until int max
+    adder.get_val();
+  }
+  double end = Zen::Timer::get_current_time() / 1000000;
+  std::cout << "start: " << start << std::endl << "duration: " << (end - start) << std::endl << "nanoseconds per call: " << (end - start) / 10 << std::endl;
+
+  auto f = [](const std::string& s) -> int { // similar set, but returns int, which can convert into double
+    return std::stoi(s);
+  };
+
+  start = Zen::Timer::get_current_time() / 1000000;
+  for (int l = 0; l < 10000000; l++) { // Aka until int max
+    double(f(num_string)) + get_double();
+  }
+  end = Zen::Timer::get_current_time() / 1000000;
+  std::cout << "start: " << start << std::endl << "duration: " << (end - start) << std::endl << "nanoseconds per call: " << (end - start) / 10 << std::endl;
 }
