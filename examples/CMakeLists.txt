@@ -10,5 +10,8 @@ add_executable(TimerExamples timer_examples.cpp ../src/timer.cpp)
 project(Vector2Examples)
 add_executable(Vector2Examples vector2_examples.cpp ../src/types/vector2.cpp)
 
-project(AnythingStorageExamples)
-add_executable(AnythingStorageExamples var_storage_examples.cpp ../src/var_storage.h ../src/timer.cpp)
+project(VarStorageExamples)
+add_executable(VarStorageExamples var_storage_examples.cpp ../src/var_storage.h ../src/timer.cpp)
+
+project(MessageBusExamples)
+add_executable(MessageBusExamples message_bus_example.cpp ../src/data_packet.h ../src/message.h ../src/message_bus.h ../src/message_listener.h ../src/timer.cpp)

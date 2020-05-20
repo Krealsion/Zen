@@ -1,9 +1,9 @@
 #pragma once
 
-#include <vector>
+#include <rectangle.h>
+#include <line_2d.h>
 
-#include "rectangle.h"
-#include "line_2d.h"
+#include <vector>
 
 namespace Zen {
 
