@@ -1,34 +1,38 @@
 INCLUDE(FindPkgConfig)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/Zen/sdl_c_make_files")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
+
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 
 add_library(Zen
-        var_storage.h
         timer.cpp
-        graphics/renderer.cpp
+        var_storage.h
+        graphics/drawable.h
         graphics/game_graphics.cpp
-        graphics/window.cpp
         graphics/particle.cpp
+        graphics/renderer.cpp
         graphics/sprite.h
         graphics/texture.cpp
-        state_management/game_state_manager.cpp
+        graphics/texture_manager.cpp
+        graphics/window.cpp
         state_management/game_state.h
-        types/plane_bounded.cpp
+        state_management/game_state_manager.cpp
+        types/color.cpp
         types/function.h
+        types/plane_bounded.cpp
         types/rectangle.cpp
         types/vector2.cpp
         types/vector3.cpp
-        types/color.cpp
-        graphics/texture_manager.cpp graphics/texture_manager.h graphics/drawable.h)
+        )
 
 target_include_directories(Zen PUBLIC
         ../src
-        types/
-        state_management/
         graphics/
+        state_management/
+        types/
         ${SDL2_INCLUDE_DIR}
         ${SDL2_IMAGE_INCLUDE_DIR}
         ${SDL2_TTF_INCLUDE_DIR})

@@ -4,7 +4,7 @@ namespace Zen {
 
 class Color {
 public:
-  Color();
+  Color() = default;
   Color(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha = 0);
 
   void set(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha = 0);
