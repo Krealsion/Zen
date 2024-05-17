@@ -1,6 +1,6 @@
 #pragma once
 
-#include "drawable.h"
+#include "src/graphics/user_interface/custom_layout.h"
 #include "texture.h"
 #include "types/vector2.h"
 #include "types/rectangle.h"
@@ -12,7 +12,7 @@ namespace Zen {
  * - Be resized
  * - Be rotated around an arbitrary point
  */
-class Sprite : public Drawable {
+class Sprite : public CustomLayout {
 public:
   Sprite() = default;
   Sprite(std::shared_ptr<Texture> texture, Vector2 position) : _texture(std::move(texture)) {}

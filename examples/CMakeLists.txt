@@ -11,7 +11,7 @@ project(Vector2Examples)
 add_executable(Vector2Examples vector2_examples.cpp ../src/types/vector2.cpp)
 
 project(VarStorageExamples)
-add_executable(VarStorageExamples var_storage_examples.cpp ../src/var_storage.h ../src/timer.cpp)
+add_executable(VarStorageExamples var_storage_examples.cpp ../src/message_bus/var_storage.h ../src/timer.cpp)
 
 project(MessageBusExamples)
-add_executable(MessageBusExamples message_bus_example.cpp ../src/data_packet.h ../src/message.h ../src/message_bus.h ../src/message_listener.h ../src/timer.cpp)
+add_executable(MessageBusExamples message_bus_example.cpp ../src/message_bus/data_packet.h ../src/message_bus/message.h ../src/message_bus/message_bus.h ../src/message_bus/message_listener.h ../src/timer.cpp)

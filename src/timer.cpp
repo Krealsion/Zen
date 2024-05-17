@@ -41,35 +41,32 @@ bool Timer::peek_is_time() {
 }
 
 double Timer::peek_progress() {
-  if (_paused) {
-    return std::chrono::duration_cast<std::chrono::milliseconds>(_last_update.time_since_epoch()).count();
-  }
   return std::chrono::duration_cast<std::chrono::milliseconds>(_current_time - _last_update).count();
 }
 
-double Timer::peek_progress_pecentage() {
+double Timer::peek_progress_percentage() {
   return peek_progress() / std::chrono::duration_cast<std::chrono::nanoseconds>(_effective_delay).count() * 1000000;
 }
 
-double Timer::get_time_multiplier() {
+double Timer::get_time_multiplier() const {
   return _time_multiplier;
 }
 
-void Timer::set_time_multiplier(double TimeMultiplier) {
+void Timer::set_time_multiplier(double time_multiplier) {
   if (_paused) {
     _last_update = _last_update - std::chrono::nanoseconds((long long) (
-            _last_update.time_since_epoch().count() * (1 - (this->_time_multiplier / TimeMultiplier))));
+            _last_update.time_since_epoch().count() * (1 - (this->_time_multiplier / time_multiplier))));
   } else {
     //Subtract time to set the relative time progress to an equal percentage
     _last_update = _current_time - std::chrono::nanoseconds((long long) (
             (_current_time.time_since_epoch().count() - _last_update.time_since_epoch().count()) *
-            this->_time_multiplier / TimeMultiplier));
+            this->_time_multiplier / time_multiplier));
   }
-  this->_time_multiplier = TimeMultiplier;
+  this->_time_multiplier = time_multiplier;
   _update_effective_delay();
 }
 
-bool Timer::is_paused() {
+bool Timer::is_paused() const {
   return _paused;
 }
 
@@ -94,33 +91,27 @@ void Timer::_switch_pause_states() {
   _last_update = _current_time - _last_update.time_since_epoch();
 }
 
-double Timer::get_current_time() {
+long long Timer::get_current_time() {
   if (_automatic_updates)
     update_time();
   return _current_time.time_since_epoch().count();
 }
 
-double Timer::get_nanoseconds_since_started() {
+long long Timer::get_nanoseconds_since_started() {
   if (_automatic_updates)
     update_time();
   return std::chrono::duration_cast<std::chrono::nanoseconds>((_current_time - _start_time.time_since_epoch()).time_since_epoch()).count();
 }
 
-double Timer::get_microseconds_since_started() {
-  if (_automatic_updates)
-    update_time();
+long long Timer::get_microseconds_since_started() {
   return get_nanoseconds_since_started() / 1000;
 }
 
-double Timer::get_milliseconds_since_started() {
-  if (_automatic_updates)
-    update_time();
+long long Timer::get_milliseconds_since_started() {
   return get_microseconds_since_started() / 1000;
 }
 
-double Timer::get_seconds_since_started() {
-  if (_automatic_updates)
-    update_time();
+long long Timer::get_seconds_since_started() {
   return get_milliseconds_since_started() / 1000;
 }
 }

@@ -18,6 +18,7 @@ GameStateManager::GameStateManager(GameState* initial_state) : _renderer("Game",
   });
   while (is_running()) {
     SDL_PumpEvents();
+
   }
   _update_thread.join();
   _draw_thread.join();
@@ -39,7 +40,7 @@ void GameStateManager::update() {
 
 void GameStateManager::draw() {
   if (!_game_states.empty()) {
-    _game_states.back()->draw(_graphics);
+    _game_states.back()->draw_gamestate(_graphics);
   }
   _renderer.render_game_graphics(_graphics);
 }
@@ -63,11 +64,15 @@ void GameStateManager::pop_state() {
   }
 }
 
-bool GameStateManager::is_running() {
+bool GameStateManager::is_running() const {
   return _running;
 }
 
 void GameStateManager::exit() {
   _running = false;
+}
+
+Renderer* GameStateManager::get_renderer() {
+  return &_renderer;
 }
 }

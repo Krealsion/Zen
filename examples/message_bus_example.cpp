@@ -1,18 +1,18 @@
 #include <memory>
-#include <message.h>
-#include <message_bus.h>
-#include <message_listener.h>
+#include "src/message_bus/message.h"
+#include "src/message_bus/message_bus.h"
+#include "src/message_bus/message_listener.h"
 #include <timer.h>
 #include <iostream>
 
 using namespace Zen;
 
-class MessageNeedingClass : public MessageListener{
+class MessageNeedingClass : public MessageListener {
 public:
   void update() {
     std::shared_ptr<Message> m;
-    while (poll_messages(m)) {
-      if (*(m->data.get_object<bool>("is_hit")) == true) {
+    while ((m = poll_messages())) {
+      if (*(m->data.get_object<bool>("is_hit"))) {
         hits++;
         std::cout << "hits: " << hits << std::endl;
       }

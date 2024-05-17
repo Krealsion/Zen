@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include <cstdarg>
 
 namespace Zen {
 
@@ -52,7 +53,6 @@ public:
                            });
     return (T*)(it->data);
   }
-
 
 };
 }

@@ -8,6 +8,7 @@ namespace Zen {
 
 class Timer {
 public:
+  explicit Timer(double delay);
   /**
    * Updates the CurrentTime, as understood by the timer.
    * Required to be called at the beginning of an update cycle if
@@ -21,9 +22,8 @@ public:
    * Not recommended for situations where order of is_time() fires are important.
    * @param Automatic False for calling update_time() manually, True for Automatic CurrentTime Updates
    */
-  static void set_automatic_updates(bool Automatic);
+  static void set_automatic_updates(bool automatic);
 
-  explicit Timer(double delay);
 
   /**
    * returns true if it is time to handle a tick
@@ -47,23 +47,23 @@ public:
   /**
    * @return a double representing the progress in percent form. (0 = 0%, 1 = 100%)
    */
-  double peek_progress_pecentage();
+  double peek_progress_percentage();
 
-  double get_time_multiplier();
+  [[nodiscard]] double get_time_multiplier() const;
 
-  void set_time_multiplier(double TimeMultiplier);
+  void set_time_multiplier(double time_multiplier);
 
-  bool is_paused();
+  [[nodiscard]] bool is_paused() const;
 
   void pause();
 
   void resume();
 
-  static double get_current_time();
-  static double get_nanoseconds_since_started();
-  static double get_microseconds_since_started();
-  static double get_milliseconds_since_started();
-  static double get_seconds_since_started();
+  static long long get_current_time();
+  static long long get_nanoseconds_since_started();
+  static long long get_microseconds_since_started();
+  static long long get_milliseconds_since_started();
+  static long long get_seconds_since_started();
 
 private:
   //The current time as understood by the timer class (Not always up to date)

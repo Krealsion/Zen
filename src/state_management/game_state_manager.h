@@ -25,8 +25,10 @@ public:
 
   void push_state(GameState* state);
   void pop_state();
-  bool is_running();
+  [[nodiscard]] bool is_running() const;
   void exit();
+
+  Renderer* get_renderer();
 
 protected:
   //Both of these methods are used internally by separate threads

@@ -1,22 +1,17 @@
 #include "game_graphics.h"
 
+#include <SDL_ttf.h>
+
 #include <functional>
-#include <algorithm>
 #include <cmath>
 
 namespace Zen {
 struct PriorityDrawable {
-  PriorityDrawable(std::function<void(SDL_Renderer*)> draw_function, int layer, float sub_layer) {
+  PriorityDrawable(std::function<void(SDL_Renderer*)>&& draw_function, int layer, float sub_layer) {
     this->layer = layer;
     this->sub_layer = sub_layer;
-    draw_function = std::move(draw_function);
+    this->draw_function = std::move(draw_function);
   }
-
-  int& get_layer() { return layer; }
-  float& get_sublayer() { return sub_layer; }
-  std::function<void(SDL_Renderer*)>& get_draw_function() { return draw_function; }
-
-private:
   int layer;
   float sub_layer;
   std::function<void(SDL_Renderer*)> draw_function;
@@ -27,14 +22,14 @@ GameGraphics::GameGraphics() {
 }
 
 void GameGraphics::draw(SDL_Renderer* renderer) {
-  std::sort(_draw_list.begin(), _draw_list.end(), [&renderer](PriorityDrawable* a, PriorityDrawable* b) {
-    if (a->get_layer() == b->get_layer()) {
-      return a->get_sublayer() - b->get_sublayer();
+  std::sort(_draw_list.begin(), _draw_list.end(), [](PriorityDrawable* a, PriorityDrawable* b) {
+    if (a->layer == b->layer) {
+      return a->sub_layer - b->sub_layer;
     }
-    return (float) (a->get_layer() - b->get_layer());
+    return (float) (a->layer - b->layer);
   });
   for (auto priority_drawable : _draw_list) {
-    priority_drawable->get_draw_function()(renderer);
+    priority_drawable->draw_function(renderer);
     delete (priority_drawable);
   }
   _draw_list.clear();
@@ -149,12 +144,37 @@ void GameGraphics::draw_texture(const std::shared_ptr<Texture>& texture, const R
   draw_texture(texture, destination, std::make_pair<bool, bool>(false, false), layer, sub_layer, use_camera);
 }
 
+void GameGraphics::draw_line(const Zen::Vector2& start, const Zen::Vector2& end, const Zen::Color& color, int layer, float sub_layer, bool use_camera) {
+  _draw_list.emplace_back(new PriorityDrawable([=](SDL_Renderer* renderer) {
+    _set_color(renderer, color);
+    auto sdl_start = _to_sdl_point(start, use_camera);
+    auto sdl_end = _to_sdl_point(end, use_camera);
+    SDL_RenderDrawLine(renderer, sdl_start->x, sdl_start->y, sdl_end->x, sdl_end->y);
+  }, layer, sub_layer));
+}
+
+void GameGraphics::draw_text(const std::string& text, const std::string& font, int font_size, const Color& color, double max_width, std::function<Vector2(Vector2)>&& post_positioning_check, int layer, float sub_layer, bool use_camera) {
+  _draw_list.emplace_back(new PriorityDrawable([=](SDL_Renderer* renderer) {
+    _set_color(renderer, color);
+    auto path = SDL_GetBasePath();
+    TTF_Font* sdl_font = TTF_OpenFont(("Resources/TTFs/" + font).c_str(), font_size);
+    auto error = SDL_GetError();
+    auto sdl_color = _to_sdl_color(color);
+    auto text_surface = TTF_RenderUTF8_Blended_Wrapped(sdl_font, text.c_str(), *sdl_color, max_width);
+    auto destination_rect = post_positioning_check(Vector2(text_surface->w, text_surface->h));
+    auto sdl_dest = _to_sdl_rect(Rectangle(destination_rect, Vector2(text_surface->w, text_surface->h)), use_camera);
+    SDL_RenderCopy(renderer, SDL_CreateTextureFromSurface(renderer, text_surface), nullptr, sdl_dest.get());
+    SDL_FreeSurface(text_surface);
+  }, layer, sub_layer));
+
+}
+
 std::unique_ptr<SDL_Rect> GameGraphics::_to_sdl_rect(const Rectangle& rectangle, bool use_camera) {
   auto sdl_rect = std::make_unique<SDL_Rect>();
   sdl_rect->x = rectangle.get_position().get_x_int();
   sdl_rect->y = rectangle.get_position().get_y_int();
-  sdl_rect->h = rectangle.get_size().get_x_int();
-  sdl_rect->w = rectangle.get_size().get_y_int();
+  sdl_rect->h = rectangle.get_size().get_y_int();
+  sdl_rect->w = rectangle.get_size().get_x_int();
   if (use_camera) {
     sdl_rect->x += _camera.get_x_int();
     sdl_rect->y += _camera.get_y_int();
@@ -171,6 +191,15 @@ std::unique_ptr<SDL_Point> GameGraphics::_to_sdl_point(const Vector2& point, boo
     sdl_point->y += _camera.get_y_int();
   }
   return sdl_point;
+}
+
+std::unique_ptr<SDL_Color> GameGraphics::_to_sdl_color(const Color& color) {
+  auto sdl_color = std::make_unique<SDL_Color>();
+  sdl_color->r = color.get_red();
+  sdl_color->g = color.get_green();
+  sdl_color->b = color.get_blue();
+  sdl_color->a = color.get_alpha();
+  return sdl_color;
 }
 
 SDL_RendererFlip GameGraphics::_to_sdl_render_flip(const std::pair<bool, bool>& flips) {
