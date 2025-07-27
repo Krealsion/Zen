@@ -23,6 +23,7 @@ public:
   Vector3& abs();
   Vector3& negate();
   Vector3& invert();
+  bool operator==(const Vector3& vector3) const;
 
   static Vector3 scale(const Vector3& v, const double& s);
   static Vector3 cross_product(const Vector3& a, const Vector3& b);

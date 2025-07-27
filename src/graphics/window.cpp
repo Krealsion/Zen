@@ -6,9 +6,9 @@ namespace Zen {
 
 Window::Window(const std::string& name, Rectangle window_rectangle) {
   sdl_window = SDL_CreateWindow(name.c_str(),
-                                (int) window_rectangle.get_x(), (int) window_rectangle.get_y(),
-                                (int) window_rectangle.get_width(), (int) window_rectangle.get_height(),
-                                SDL_WINDOW_SHOWN);
+                            (int) window_rectangle.get_width(),
+                             (int) window_rectangle.get_height(),
+                          SDL_WINDOW_RESIZABLE);
 }
 
 Window::~Window() {

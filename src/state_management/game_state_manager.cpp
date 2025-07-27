@@ -1,5 +1,6 @@
 #include "game_state_manager.h"
 
+#include "input.h"
 #include "game_state.h"
 #include "timer.h"
 
@@ -16,9 +17,12 @@ GameStateManager::GameStateManager(GameState* initial_state) : _renderer("Game",
     while (is_running())
       draw();
   });
+  KeyCombo AltF4 = {SDL_SCANCODE_F4, {SDL_SCANCODE_LALT}};
   while (is_running()) {
-    SDL_PumpEvents();
-
+    if (Input::is_key_down(AltF4)) {
+      exit(); // Exit on Alt + F4
+    }
+    Input::update_input();
   }
   _update_thread.join();
   _draw_thread.join();
@@ -36,6 +40,7 @@ void GameStateManager::update() {
   if (!_game_states.empty()) {
     _game_states.back()->update();
   }
+  Input::clean(); // Clean up input after each update
 }
 
 void GameStateManager::draw() {

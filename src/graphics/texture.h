@@ -3,13 +3,12 @@
 #include "types/color.h"
 #include "types/rectangle.h"
 
-#include <SDL_render.h>
+#include <SDL3/SDL_render.h>
 
 namespace Zen {
 
 /**
  * This is a wrapper class for SDL_Texture
- *
  */
 class Texture {
 public:
@@ -17,11 +16,6 @@ public:
   explicit Texture(const std::string& texture_path);
 
   Vector2 get_size();
-
-//  void invert_texture();
-
-//  void add_filter(Color color, Rectangle area);
-//  void remove_filter();
 
 private:
   explicit Texture(SDL_Texture* texture) {

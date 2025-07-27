@@ -13,7 +13,7 @@ public:
   }
 
   void connect(void* key, std::function<void()>&& callback) {
-    _callbacks.emplace_back(std::make_tuple(key, std::move(callback)));
+    _callbacks.emplace_back(key, std::move(callback));
   }
 
   void disconnect(void* key) {
@@ -24,6 +24,10 @@ public:
 
   void emit() {
     for (auto& callback_tuple : _callbacks) {
+      if (std::get<0>(callback_tuple) == nullptr) {
+        // TODO add error logging
+        continue; // Skip if the key is null
+      }
       std::get<1>(callback_tuple)();
     }
   }

@@ -25,3 +25,8 @@ add_executable(Project main.cpp)
 target_include_directories(Project PUBLIC Zen)
 target_link_libraries(Project Zen)
 ```
+
+Libraries the Zen engine uses are:
+- [SDL3]()
+- [SDL3_image](https://github.com/libsdl-org/SDL_image)
+- [SDL3_ttf](https://github.com/libsdl-org/SDL_ttf)

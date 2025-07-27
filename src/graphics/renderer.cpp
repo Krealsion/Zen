@@ -2,16 +2,16 @@
 
 #include "texture_manager.h"
 
-#include <SDL.h>
-#include <SDL_ttf.h>
+#include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 #include <string>
 
 namespace Zen {
 Renderer::Renderer(const std::string& name, Rectangle window_rectangle) : _game_window(name, window_rectangle) {
-  SDL_Init(SDL_INIT_EVERYTHING);
+  SDL_Init(SDL_INIT_VIDEO);
   TTF_Init();
-  _renderer = SDL_CreateRenderer(_game_window.get_window(), 0, SDL_RENDERER_ACCELERATED);
+  _renderer = SDL_CreateRenderer(_game_window.get_window(), 0);//, SDL_RENDERER_ACCELERATED);
   SDL_SetRenderDrawColor(_renderer, 0xFF, 0xFF, 0xFF, 0x00);
   TextureManager::_set_renderer(_renderer);
 }

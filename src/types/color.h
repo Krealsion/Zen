@@ -1,24 +1,25 @@
 #pragma once
+#include <SDL3/SDL_stdinc.h>
 
 namespace Zen {
 
 class Color {
 public:
   Color() = default;
-  Color(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha = 0);
+  Color(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha = 255);
 
-  void set(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha = 0);
-  void set_red(unsigned char red);
-  void set_green(unsigned char green);
-  void set_blue(unsigned char blue);
-  void set_alpha(unsigned char alpha);
+  void set(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha = 255);
+  void set_red(Uint8 red);
+  void set_green(Uint8 green);
+  void set_blue(Uint8 blue);
+  void set_alpha(Uint8 alpha);
 
-  unsigned char get_red() const;
-  unsigned char get_green() const;
-  unsigned char get_blue() const;
-  unsigned char get_alpha() const;
+  Uint8 get_red() const;
+  Uint8 get_green() const;
+  Uint8 get_blue() const;
+  Uint8 get_alpha() const;
 
 private:
-  unsigned char _red, _green, _blue, _alpha;
+  Uint8 _red, _green, _blue, _alpha;
 };
 }

@@ -1,47 +1,46 @@
 #include "color.h"
 
-namespace Zen {
-Color::Color(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha) : _red(red),
-                                                                                                _green(green),
-                                                                                                _blue(blue),
-                                                                                                _alpha(alpha) {}
+#include <SDL3/SDL_stdinc.h>
 
-void Color::set(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha) {
+namespace Zen {
+Color::Color(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha) : _red(red), _green(green), _blue(blue), _alpha(alpha) {}
+
+void Color::set(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha) {
   set_red(red);
   set_green(green);
   set_blue(blue);
   set_alpha(alpha);
 }
 
-unsigned char Color::get_red() const {
+Uint8 Color::get_red() const {
   return _red;
 }
 
-unsigned char Color::get_green() const {
+Uint8 Color::get_green() const {
   return _green;
 }
 
-unsigned char Color::get_blue() const {
+Uint8 Color::get_blue() const {
   return _blue;
 }
 
-unsigned char Color::get_alpha() const {
+Uint8 Color::get_alpha() const {
   return _alpha;
 }
 
-void Color::set_red(unsigned char red) {
+void Color::set_red(Uint8 red) {
   _red = red;
 }
 
-void Color::set_green(unsigned char green) {
-green = green;
+void Color::set_green(Uint8 green) {
+  _green = green;
 }
 
-void Color::set_blue(unsigned char blue) {
+void Color::set_blue(Uint8 blue) {
   _blue = blue;
 }
 
-void Color::set_alpha(unsigned char alpha) {
+void Color::set_alpha(Uint8 alpha) {
   _alpha = alpha;
 }
 }

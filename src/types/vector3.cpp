@@ -17,6 +17,11 @@ Vector3::Vector3(double x, double y, double z) {
   _z = z;
 }
 
+bool Vector3::operator==(const Vector3& vector3) const {
+  return _x == vector3._x && _y == vector3._y && _z == vector3._z;
+}
+
+
 Vector3& Vector3::set_x(double x) {
   _x = x;
   return *this;

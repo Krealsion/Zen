@@ -7,6 +7,7 @@ namespace Zen {
 class Vector2 {
 public:
   Vector2();
+  Vector2(int x, int y);
   Vector2(double x, double y);
 
   //Returns a reference to this object, not a copy

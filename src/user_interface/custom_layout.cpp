@@ -1,6 +1,15 @@
 #include "custom_layout.h"
 
+#include "game_graphics.h"
+#include "logic/utils.h"
+
 namespace Zen {
+static int _next_id = 0;
+
+CustomLayout::CustomLayout() {
+  set_name(Utility::demangle(typeid(*this).name()) + std::to_string(_next_id++));
+}
+
 void CustomLayout::update() {
   for (auto child : _children) {
     child->update();
@@ -17,9 +26,7 @@ void CustomLayout::draw(GameGraphics& game_graphics) {
   if (!_visible) return;
 
   if (_has_background_color) {
-    auto size = get_size();
-    auto pos = get_position();
-    game_graphics.fill_rectangle(Rectangle(pos, size), _background_color);
+    game_graphics.fill_rectangle(get_background_destination(), _background_color);
   }
 
   for (auto child : _children) {
@@ -58,11 +65,13 @@ void CustomLayout::add_child(CustomLayout* child, int position) {
   child->set_parent(this);
   child->on_size_changed.connect(this, [this]() { _child_size_changed(); });
   _size_current = false;
+  // set child position to be not current only if a child has a fill size
 }
 
 void CustomLayout::remove_child(CustomLayout* child) {
   auto it = std::find(_children.begin(), _children.end(), child);
   if (it != _children.end()) {
+    // TODO Engine option for removing to delete the child?
     _children.erase(it);
   }
 }
@@ -117,32 +126,20 @@ void CustomLayout::click() {
 }
 
 Vector2 CustomLayout::get_size() {
-  if (_size_current) {
-    return {_width, _height};
-  }
+  return {get_width(), get_height()};
+}
+
+double CustomLayout::get_width() {
+  auto inside = _parent->get_inside_destination();
   switch (_size_to_width) {
-    case SizeTo::NONE:
-      break;
     case SizeTo::PARENT:
-      if (_parent != nullptr) {
-        _width =_parent->get_size().get_x();
-      } else {
-        throw std::runtime_error("Parent is null");
-      }
+      _width = inside.get_width();
       break;
     case SizeTo::PARENT_PERCENT:
-      if (_parent != nullptr) {
-        _width =_parent->get_size().get_x() * _size_to_width_value;
-      } else {
-        throw std::runtime_error("Parent is null");
-      }
+      _width = inside.get_width() * _size_to_width_value;
       break;
     case SizeTo::PARENT_STATIC:
-      if (_parent != nullptr) {
-        _height =_parent->get_size().get_x() - _size_to_width_value;
-      } else {
-        throw std::runtime_error("Parent is null");
-      }
+      _height = inside.get_width() - _size_to_width_value;
       break;
     case SizeTo::CHILDREN:
     case SizeTo::CHILDREN_PERCENT:
@@ -162,49 +159,45 @@ Vector2 CustomLayout::get_size() {
           _width = max_width + _padding_value_left + _padding_value_right;
         }
       } if (_layout == Layout::HORIZONTAL) {
-        double children_width = 0;
-        for (auto child : _children) {
-          double child_width = child->get_width();
-          if (children_width != 0) {
-            children_width += child_width + _child_spacing;
-          } else {
-            children_width += child_width;
-          }
-        }
-        if (_size_to_width == SizeTo::CHILDREN_PERCENT) {
-          _width = children_width * _size_to_width_value + _padding_value_left + _padding_value_right;
-        } else {
-          _width = children_width + _padding_value_left + _padding_value_right;
-        }
+    double children_width = 0;
+    for (auto child : _children) {
+      double child_width = child->get_width();
+      if (children_width != 0) {
+        children_width += child_width + _child_spacing;
+      } else {
+        children_width += child_width;
       }
+    }
+    if (_size_to_width == SizeTo::CHILDREN_PERCENT) {
+      _width = children_width * _size_to_width_value + _padding_value_left + _padding_value_right;
+    } else {
+      _width = children_width + _padding_value_left + _padding_value_right;
+    }
+  }
+      break;
+    case SizeTo::FILL:
+
       break;
     case SizeTo::STATIC:
       _width =_size_to_width_value;
       break;
-  }
-  switch (_size_to_height) {
-    case SizeTo::NONE:
+    default:
       break;
+  }
+  return _width;
+}
+
+double CustomLayout::get_height() {
+  auto inside = _parent->get_inside_destination();
+  switch (_size_to_height) {
     case SizeTo::PARENT:
-      if (_parent != nullptr) {
-        _height =_parent->get_size().get_y();
-      } else {
-        throw std::runtime_error("Parent is null");
-      }
+      _height = inside.get_height();
       break;
     case SizeTo::PARENT_PERCENT:
-      if (_parent != nullptr) {
-        _height =_parent->get_size().get_y() * _size_to_height_value;
-      } else {
-        throw std::runtime_error("Parent is null");
-      }
+      _height = inside.get_height() * _size_to_height_value;
       break;
     case SizeTo::PARENT_STATIC:
-      if (_parent != nullptr) {
-        _height =_parent->get_size().get_y() - _size_to_height_value;
-      } else {
-        throw std::runtime_error("Parent is null");
-      }
+      _height = inside.get_height() - _size_to_height_value;
       break;
     case SizeTo::CHILDREN:
     case SizeTo::CHILDREN_PERCENT:
@@ -219,48 +212,46 @@ Vector2 CustomLayout::get_size() {
           }
         }
         if (_size_to_height == SizeTo::CHILDREN_PERCENT) {
-          _height = max_height * _size_to_height_value + _padding_value_top + _padding_value_bottom;
+          _height = max_height * _size_to_height_value;
         } else {
-          _height = max_height + _padding_value_top + _padding_value_bottom;
+          _height = max_height;
         }
       } if (_layout == Layout::VERTICAL) {
-        double children_height = 0;
-        for (auto child : _children) {
-          double child_height = child->get_height();
-          if (children_height != 0) {
-            children_height += child_height + _child_spacing;
-          } else {
-            children_height += child_height;
-          }
-        }
-        if (_size_to_height == SizeTo::CHILDREN_PERCENT) {
-          _height = children_height * _size_to_height_value + _padding_value_top + _padding_value_bottom;
-        } else {
-          _height = children_height + _padding_value_top + _padding_value_bottom;
-        }
+    double children_height = 0;
+    for (auto child : _children) {
+      double child_height = child->get_height();
+      if (children_height != 0) {
+        children_height += child_height + _child_spacing;
+      } else {
+        children_height += child_height;
       }
+    }
+    if (_size_to_height == SizeTo::CHILDREN_PERCENT) {
+      _height = children_height * _size_to_height_value;
+    } else {
+      _height = children_height + _size_to_height_value;
+    }
+  }
       break;
     case SizeTo::STATIC:
       _height = _size_to_height_value;
       break;
+    default:
+      break;
   }
-  _size_current = true;
-  return {_width, _height};
-}
-
-double CustomLayout::get_width() {
-  if (_size_current) {
-    return _width;
-  } else {
-    return get_size().get_x();
+  if (_width < _min_width) {
+    _width = _min_width;
   }
-}
-double CustomLayout::get_height() {
-  if (_size_current) {
-    return _height;
-  } else {
-    return get_size().get_y();
+  if (_height < _min_height) {
+    _height = _min_height;
   }
+  if (_max_width > 0 && _width > _max_width) {
+    _width = _max_width;
+  }
+  if (_max_height > 0 && _height > _max_height) {
+    _height = _max_height;
+  }
+  return _height;
 }
 
 void CustomLayout::set_padding(double padding_top, double padding_bottom, double padding_left, double padding_right) {
@@ -488,57 +479,78 @@ void CustomLayout::set_position_y(PositionTo position_to_y, int value_y) {
 }
 
 Vector2 CustomLayout::get_position() {
-  if (_position_current) {
+  if (_position_current) { // TODO add checks and sets for this
     return {_pos_x, _pos_y};
   }
+  auto parent_inside = _parent->get_inside_destination();
   switch (_position_to_x) {
-    case PositionTo::LEFT:
-      _pos_x = _parent->get_position().get_x() + _parent->get_padding_left();
-      break;
-    case PositionTo::RIGHT:
-      _pos_x = _parent->get_position().get_x() + _parent->get_size().get_x() - _width - _parent->get_padding_right();
-      break;
-    case PositionTo::CENTER:
-      _pos_x = _parent->get_position().get_x() + (_parent->get_size().get_x() - _width) / 2;
-      break;
     case PositionTo::RELATIVE:
-      _pos_x = _position_to_x_value + _parent->get_position().get_x();
+      _pos_x = parent_inside.get_x() + _position_to_x_value;
       break;
     case PositionTo::PARENT_CONTROLLED:
       _parent->_request_child_position_update();
       break;
+    case PositionTo::LEFT:
+      _pos_x = parent_inside.get_x();
+      break;
+    case PositionTo::RIGHT:
+      _pos_x = parent_inside.get_x() + parent_inside.get_width() - get_width();
+      break;
+    case PositionTo::CENTER:
+      _pos_x = parent_inside.get_x() + (parent_inside.get_width() - get_width()) / 2;
+      break;
     case PositionTo::TOP:
     case PositionTo::BOTTOM:
-    case PositionTo::NONE:
       break;
   }
   switch (_position_to_y) {
-    case PositionTo::TOP:
-      _pos_y = _parent->get_position().get_y() + _parent->get_padding_top();
-      break;
-    case PositionTo::BOTTOM:
-      _pos_y = _parent->get_position().get_y() + _parent->get_size().get_y() - _height - _parent->get_padding_bottom();
-      break;
-    case PositionTo::CENTER:
-      _pos_y = _parent->get_position().get_y() + (_parent->get_size().get_y() - _height) / 2;
-      break;
     case PositionTo::RELATIVE:
-      _pos_y = _position_to_y_value + _parent->get_position().get_y();
+      _pos_y = parent_inside.get_y() + _position_to_y_value;
       break;
     case PositionTo::PARENT_CONTROLLED:
       _parent->_request_child_position_update();
       break;
+    case PositionTo::TOP:
+      _pos_y = parent_inside.get_y();
+      break;
+    case PositionTo::BOTTOM:
+      _pos_y = parent_inside.get_y() + parent_inside.get_height() - get_height();
+      break;
+    case PositionTo::CENTER:
+      _pos_y = parent_inside.get_y() + (parent_inside.get_height() - _height) / 2;
+      break;
     case PositionTo::LEFT:
     case PositionTo::RIGHT:
-    case PositionTo::NONE:
       break;
   }
 
   return {_pos_x, _pos_y};
 }
 
+Rectangle CustomLayout::get_owned_destination() {
+  return Rectangle(get_position().get_x(), get_position().get_y(), get_width(), get_height());
+}
+
+Rectangle CustomLayout::get_background_destination() {
+  auto owned = get_owned_destination();
+  owned.set_x(owned.get_x() + get_margin_left());
+  owned.set_y(owned.get_y() + get_margin_top());
+  owned.set_width(owned.get_width() - get_margin_right() - get_margin_left());
+  owned.set_height(owned.get_height() - get_margin_top() - get_margin_bottom());
+  return owned;
+}
+
+Rectangle CustomLayout::get_inside_destination() {
+  auto bg_dest = get_background_destination();
+  bg_dest.set_x(bg_dest.get_x() + get_padding_left());
+  bg_dest.set_y(bg_dest.get_y() + get_padding_top());
+  bg_dest.set_width(bg_dest.get_width() - get_padding_right() - get_padding_left());
+  bg_dest.set_height(bg_dest.get_height() - get_padding_top() - get_padding_bottom());
+  return bg_dest;
+}
+
 void CustomLayout::_request_child_position_update() {
-  if (_layout == Layout::NONE) return;
+  if (_layout == Layout::CHILD_CONTROLLED) return;
   double next_position = _child_spacing;
   for (auto child : _children) {
     if (_layout == Layout::VERTICAL) {
@@ -547,8 +559,6 @@ void CustomLayout::_request_child_position_update() {
     } else if (_layout == Layout::HORIZONTAL) {
       child->_pos_x = next_position;
       next_position += child->get_width() + _child_spacing;
-    } else if (_layout == Layout::NONE) {
-
     }
   }
 }

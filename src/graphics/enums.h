@@ -1,49 +1,61 @@
 #pragma once
 
+#include <string>
+
 namespace Zen {
 
 
 enum class Layout {
-  NONE,
+  CHILD_CONTROLLED,
   HORIZONTAL,
   VERTICAL
 };
 
 enum class PositionTo {
-  NONE,
+  RELATIVE, // Values are treated as a normal position on the x, y plane relative to parent
   // Used with Vertical Layouts
   LEFT,
   RIGHT,
   // Used with Horizontal Layouts
   TOP,
-  TOP_LEFT,
-  TOP_RIGHT,
   BOTTOM,
-  BOTTOM_LEFT,
-  BOTTOM_RIGHT,
   // Used with both
   CENTER,
   PARENT_CONTROLLED,
-  RELATIVE // Values are treated as a normal position on the x, y plane relative to parent
+};
+
+enum DataType {
+  BIT,
+  STRING,
+  NUMBER,
+  BOOLEAN
+};
+
+enum TextBoxFilterType {
+  ANY,
+  DATA_TYPE, // Data type is used to determine the type of data that can be entered into the textbox TODO:: This will require a variable data storage system to implement, think about using varius try and catch statements to try the conversion and display an (todo) issue that can be resolved before the data will be reattempted
+  INTEGER, // TODO consider a regex for this and make it plugin based so that it can be extended
+  EMAIL, // TODO consider a regex for this and make it plugin based so that it can be extended
+  PLUGIN
 };
 
 enum class SizeTo {
-  NONE,
+  STATIC = 0,
   PARENT, // Any additional value is treated as a static addition
   PARENT_PERCENT, // Any additional value is treated as a percentage with 1 being 100%
+  PARENT_STATIC, // Any additional value is subtracted from the size of the parent
   CHILDREN, // Any additional value is treated as a static addition
   CHILDREN_PERCENT, // Any additional value is treated as a percentage with 1 being 100%
-  STATIC
+  FILL
 };
 
 enum class PaddingTo {
-  NONE,
   STATIC,
   PERCENT
 };
 
 // Unused
-//enum class Direction {
+//enum class ScrollDirection {
 //  NONE,
 //  HORIZONTAL,
 //  VERTICAL,

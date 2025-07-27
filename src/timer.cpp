@@ -104,14 +104,14 @@ long long Timer::get_nanoseconds_since_started() {
 }
 
 long long Timer::get_microseconds_since_started() {
-  return get_nanoseconds_since_started() / 1000;
+  return std::chrono::duration_cast<std::chrono::microseconds>((_current_time - _start_time.time_since_epoch()).time_since_epoch()).count();
 }
 
 long long Timer::get_milliseconds_since_started() {
-  return get_microseconds_since_started() / 1000;
+  return std::chrono::duration_cast<std::chrono::milliseconds>((_current_time - _start_time.time_since_epoch()).time_since_epoch()).count();
 }
 
 long long Timer::get_seconds_since_started() {
-  return get_milliseconds_since_started() / 1000;
+  return std::chrono::duration_cast<std::chrono::seconds>((_current_time - _start_time.time_since_epoch()).time_since_epoch()).count();
 }
 }

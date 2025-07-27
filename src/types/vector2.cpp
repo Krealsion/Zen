@@ -10,6 +10,11 @@ Vector2::Vector2() {
   _y = 0;
 }
 
+Vector2::Vector2(int x, int y) {
+  _x = (double) x;
+  _y = (double) y;
+}
+
 Vector2::Vector2(double x, double y) {
   _x = x;
   _y = y;

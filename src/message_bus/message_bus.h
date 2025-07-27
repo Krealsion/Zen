@@ -22,7 +22,7 @@ public:
   }
   
   static void message_hook(const std::string& message_id, std::function<void(const DataPacket&)> callback) {
-    MessageBus::get_singleton().message_hooks.emplace_back(message_id, std::move(callback));
+    get_singleton().message_hooks.emplace_back(message_id, std::move(callback));
   }
 
   static std::queue<std::shared_ptr<Message>>* get_message_queue() {
@@ -33,10 +33,10 @@ public:
 
   static void broadcast(const Message& message) {
     auto shared_message = std::make_shared<Message>(message);
-    for (auto& listener_queue : Zen::MessageBus::message_listeners) {
+    for (auto& listener_queue : message_listeners) {
       listener_queue->push(shared_message);
     }
-    for (auto& hook : MessageBus::get_singleton().message_hooks) {
+    for (auto& hook : get_singleton().message_hooks) {
       if (std::get<0>(hook) == message.name) {
         std::get<1>(hook)(message.data);
       }

@@ -13,13 +13,10 @@ public:
   }
 
    std::shared_ptr<Message> poll_messages() {
-    if (message_queue->empty()) {
-      return {nullptr};
-    } else {
-      std::shared_ptr<Message> m = message_queue->front();//((*message_queue)[0]);
-      message_queue->pop();
-      return m;
-    }
+    if (message_queue->empty()) return {nullptr};
+    std::shared_ptr<Message> m = message_queue->front();
+    message_queue->pop();
+    return m;
   }
 
 private:

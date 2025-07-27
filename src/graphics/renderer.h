@@ -4,7 +4,6 @@
 #include "types/rectangle.h"
 #include "window.h"
 
-#include <SDL.h>
 
 #include <vector>
 #include <string>

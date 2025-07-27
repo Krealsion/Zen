@@ -9,7 +9,9 @@ public:
   Rectangle() = default;
   Rectangle(double x, double y, double width, double height);
   Rectangle(Vector2 position, Vector2 size);
+  Rectangle(const Rectangle& other) = default;
 
+  // TODO const& pass
   Rectangle& set_position(Vector2 position);
   Rectangle& set_size(Vector2 size);
   void set_x(double x);
@@ -26,24 +28,14 @@ public:
   double get_width() const;
   double get_height() const;
 
+  bool contains(Vector2 position) const;
+
   Rectangle copy() const;
   Rectangle deep_copy() const;
 
-  void validate() {
-    _invalidated = false;
-  }
-
-  void invalidate() {
-    _invalidated = true;
-  }
-
-  bool is_valid() {
-    return _invalidated;
-  }
+  Rectangle& operator =(const Rectangle& other) = default;
 
 protected:
-  bool _invalidated = false;
-
   Vector2 _position;
   Vector2 _size;
 };

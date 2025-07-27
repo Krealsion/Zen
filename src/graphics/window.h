@@ -1,9 +1,12 @@
 #pragma once
 
-#include <SDL_video.h>
+#include "types/rectangle.h"
+
+#include <string>
+
+#include <SDL3/SDL_video.h>
 
 namespace Zen {
-
 class Window {
 public:
   Window(const std::string& name, Rectangle window_rectangle);
