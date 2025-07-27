@@ -27,6 +27,6 @@ target_link_libraries(Project Zen)
 ```
 
 Libraries the Zen engine uses are:
-- [SDL3]()
+- [SDL3](https://github.com/RobLoach/SDL)
 - [SDL3_image](https://github.com/libsdl-org/SDL_image)
 - [SDL3_ttf](https://github.com/libsdl-org/SDL_ttf)
