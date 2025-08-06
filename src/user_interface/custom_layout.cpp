@@ -1,23 +1,24 @@
 #include "custom_layout.h"
 
+#include "game_state_manager.h"
 #include "game_graphics.h"
 #include "logic/utils.h"
 
 namespace Zen {
-static int _next_id = 0;
+int CustomLayout::_next_id = 0;
 
 CustomLayout::CustomLayout() {
   set_name(Utility::demangle(typeid(*this).name()) + std::to_string(_next_id++));
 }
 
 void CustomLayout::update() {
-  for (auto child : _children) {
+  for (auto child: _children) {
     child->update();
   }
 }
 
 CustomLayout::~CustomLayout() {
-  for (auto child : _children) {
+  for (auto child: _children) {
     delete child;
   }
 }
@@ -63,7 +64,7 @@ void CustomLayout::add_child(CustomLayout* child, int position) {
     child->set_position_x(PositionTo::PARENT_CONTROLLED, 0);
   }
   child->set_parent(this);
-  child->on_size_changed.connect(this, [this]() { _child_size_changed(); });
+  child->on_size_changed.connect(this, Action<>([this]() { _child_size_changed(); }));
   _size_current = false;
   // set child position to be not current only if a child has a fill size
 }
@@ -95,6 +96,14 @@ void CustomLayout::set_size(SizeTo size_to_width, double width_value, SizeTo siz
   set_height(size_to_height, height_value);
 }
 
+void CustomLayout::set_size(SizeTo size_to_width, SizeTo size_to_height, double height_value) {
+  set_size(size_to_width, 0, size_to_height, height_value);
+}
+
+void CustomLayout::set_size(SizeTo size_to_width, double width_value, SizeTo size_to_height) {
+  set_size(size_to_width, width_value, size_to_height, 0);
+}
+
 void CustomLayout::center() {
   if (_position_to_x == PositionTo::PARENT_CONTROLLED) {
     set_position_y(PositionTo::CENTER, 0);
@@ -107,14 +116,14 @@ void CustomLayout::center() {
 
 void CustomLayout::set_vertical() {
   _layout = Layout::VERTICAL;
-  for (auto child : _children) {
+  for (auto child: _children) {
     child->set_position_y(PositionTo::PARENT_CONTROLLED, 0);
   }
 }
 
 void CustomLayout::set_horizontal() {
   _layout = Layout::HORIZONTAL;
-  for (auto child : _children) {
+  for (auto child: _children) {
     child->set_position_x(PositionTo::PARENT_CONTROLLED, 0);
   }
 }
@@ -130,16 +139,23 @@ Vector2 CustomLayout::get_size() {
 }
 
 double CustomLayout::get_width() {
-  auto inside = _parent->get_inside_destination();
+  if (_width_current) {
+    return _width;
+  }
+  Rectangle inside;
+  if (!is_root()) {
+    inside = _parent->get_inside_destination();
+  }
   switch (_size_to_width) {
     case SizeTo::PARENT:
-      _width = inside.get_width();
+      _width = inside.get_width() - _size_to_width_value;
       break;
     case SizeTo::PARENT_PERCENT:
+      // TODO error handling with parent percent going over 1.0
       _width = inside.get_width() * _size_to_width_value;
       break;
     case SizeTo::PARENT_STATIC:
-      _height = inside.get_width() - _size_to_width_value;
+      _width = inside.get_width() - _size_to_width_value;
       break;
     case SizeTo::CHILDREN:
     case SizeTo::CHILDREN_PERCENT:
@@ -147,7 +163,7 @@ double CustomLayout::get_width() {
         _width = _padding_value_left + _padding_value_right;
       } else if (_layout == Layout::VERTICAL) {
         double max_width = 0;
-        for (auto child : _children) {
+        for (auto child: _children) {
           double child_width = child->get_width();
           if (child_width > max_width) {
             max_width = child_width;
@@ -158,40 +174,64 @@ double CustomLayout::get_width() {
         } else {
           _width = max_width + _padding_value_left + _padding_value_right;
         }
-      } if (_layout == Layout::HORIZONTAL) {
-    double children_width = 0;
-    for (auto child : _children) {
-      double child_width = child->get_width();
-      if (children_width != 0) {
-        children_width += child_width + _child_spacing;
-      } else {
-        children_width += child_width;
       }
-    }
-    if (_size_to_width == SizeTo::CHILDREN_PERCENT) {
-      _width = children_width * _size_to_width_value + _padding_value_left + _padding_value_right;
-    } else {
-      _width = children_width + _padding_value_left + _padding_value_right;
-    }
-  }
+      if (_layout == Layout::HORIZONTAL) {
+        double children_width = 0;
+        for (auto child: _children) {
+          double child_width = child->get_width();
+          if (children_width != 0) {
+            children_width += child_width + _child_spacing;
+          } else {
+            children_width += child_width;
+          }
+        }
+        if (_size_to_width == SizeTo::CHILDREN_PERCENT) {
+          _width = children_width * _size_to_width_value + _padding_value_left + _padding_value_right;
+        } else {
+          _width = children_width + _padding_value_left + _padding_value_right;
+        }
+      }
       break;
-    case SizeTo::FILL:
-
+    case SizeTo::FILL: {
+      int fill_count = 0;
+      int children_width = 0;
+      for (auto* child: _parent->_children) {
+        if (child->_size_to_width == SizeTo::FILL) {
+          fill_count++;
+        } else {
+          children_width += child->get_width();
+        }
+      }
+      _width = (inside.get_width() - children_width) / fill_count;
       break;
+    }
     case SizeTo::STATIC:
-      _width =_size_to_width_value;
+      _width = _size_to_width_value;
       break;
     default:
       break;
   }
+  if (_width < _min_width) {
+    _width = _min_width;
+  }
+  if (_max_width > 0 && _width > _max_width) {
+    _width = _max_width;
+  }
+  _width_current = true;
   return _width;
 }
 
 double CustomLayout::get_height() {
-  auto inside = _parent->get_inside_destination();
+  if (_height_current) {
+    return _height;
+  }
+  Rectangle inside;
+  if (!is_root()) {
+    inside = _parent->get_inside_destination();
+  }
   switch (_size_to_height) {
     case SizeTo::PARENT:
-      _height = inside.get_height();
+      _height = inside.get_height() - _size_to_height_value;
       break;
     case SizeTo::PARENT_PERCENT:
       _height = inside.get_height() * _size_to_height_value;
@@ -205,7 +245,7 @@ double CustomLayout::get_height() {
         _height = _padding_value_top + _padding_value_bottom;
       } else if (_layout == Layout::HORIZONTAL) {
         double max_height = 0;
-        for (auto child : _children) {
+        for (auto child: _children) {
           double child_height = child->get_height();
           if (child_height > max_height) {
             max_height = child_height;
@@ -214,43 +254,51 @@ double CustomLayout::get_height() {
         if (_size_to_height == SizeTo::CHILDREN_PERCENT) {
           _height = max_height * _size_to_height_value;
         } else {
-          _height = max_height;
+          _height = max_height + _size_to_height_value;
         }
-      } if (_layout == Layout::VERTICAL) {
-    double children_height = 0;
-    for (auto child : _children) {
-      double child_height = child->get_height();
-      if (children_height != 0) {
-        children_height += child_height + _child_spacing;
-      } else {
-        children_height += child_height;
+      } else if (_layout == Layout::VERTICAL) {
+        double children_height = 0;
+        for (auto child: _children) {
+          double child_height = child->get_height();
+          if (children_height != 0) {
+            children_height += child_height + _child_spacing;
+          } else {
+            children_height += child_height;
+          }
+        }
+        if (_size_to_height == SizeTo::CHILDREN_PERCENT) {
+          _height = children_height * _size_to_height_value;
+        } else {
+          _height = children_height + _size_to_height_value;
+        }
       }
-    }
-    if (_size_to_height == SizeTo::CHILDREN_PERCENT) {
-      _height = children_height * _size_to_height_value;
-    } else {
-      _height = children_height + _size_to_height_value;
-    }
-  }
       break;
+    case SizeTo::FILL: {
+      int fill_count = 0;
+      int children_height = 0;
+      for (auto* child: _parent->_children) {
+        if (child->_size_to_height == SizeTo::FILL) {
+          fill_count++;
+        } else {
+          children_height += child->get_height();
+        }
+      }
+      _height = (inside.get_height() - children_height) / fill_count;
+      break;
+    }
     case SizeTo::STATIC:
       _height = _size_to_height_value;
       break;
     default:
       break;
   }
-  if (_width < _min_width) {
-    _width = _min_width;
-  }
   if (_height < _min_height) {
     _height = _min_height;
-  }
-  if (_max_width > 0 && _width > _max_width) {
-    _width = _max_width;
   }
   if (_max_height > 0 && _height > _max_height) {
     _height = _max_height;
   }
+  _height_current = true;
   return _height;
 }
 
@@ -275,7 +323,7 @@ void CustomLayout::set_padding_sides(double padding_left,
   set_padding_sides(padding_left, PaddingTo::STATIC, padding_right, PaddingTo::STATIC);
 }
 void CustomLayout::set_padding_sides(double padding_left, PaddingTo padding_to_left,
-                       double padding_right, PaddingTo padding_to_right) {
+                                     double padding_right, PaddingTo padding_to_right) {
   set_padding_left(padding_left, padding_to_left);
   set_padding_right(padding_right, padding_to_right);
 }
@@ -287,7 +335,7 @@ void CustomLayout::set_padding_vertical(double padding_top,
   set_padding_vertical(padding_top, PaddingTo::STATIC, padding_bottom, PaddingTo::STATIC);
 }
 void CustomLayout::set_padding_vertical(double padding_top, PaddingTo padding_to_top,
-                       double padding_bottom, PaddingTo padding_to_bottom) {
+                                        double padding_bottom, PaddingTo padding_to_bottom) {
   set_padding_top(padding_top, padding_to_top);
   set_padding_bottom(padding_bottom, padding_to_bottom);
 }
@@ -314,44 +362,44 @@ void CustomLayout::set_padding_right(double padding_right, PaddingTo padding_to_
 
 double CustomLayout::get_padding_left() {
   if (_padding_to_left == PaddingTo::PERCENT) {
-    return _width * _padding_value_left;
+    return _parent->get_width() * _padding_value_left;
   } else if (_padding_to_left == PaddingTo::STATIC) {
     return _padding_value_left;
   } else {
-    throw(std::runtime_error("Padding left is not set to a valid value"));
+    throw (std::runtime_error("Padding left is not set to a valid value"));
     return 0;
   }
 }
 
 double CustomLayout::get_padding_right() {
   if (_padding_to_right == PaddingTo::PERCENT) {
-    return _width * _padding_value_right;
+    return _parent->get_width() * _padding_value_right;
   } else if (_padding_to_right == PaddingTo::STATIC) {
     return _padding_value_right;
   } else {
-    throw(std::runtime_error("Padding right is not set to a valid value"));
+    throw (std::runtime_error("Padding right is not set to a valid value"));
     return 0;
   }
 }
 
 double CustomLayout::get_padding_top() {
   if (_padding_to_top == PaddingTo::PERCENT) {
-    return _height * _padding_value_top;
+    return _parent->get_height() * _padding_value_top;
   } else if (_padding_to_top == PaddingTo::STATIC) {
     return _padding_value_top;
   } else {
-    throw(std::runtime_error("Padding top is not set to a valid value"));
+    throw (std::runtime_error("Padding top is not set to a valid value"));
     return 0;
   }
 }
 
 double CustomLayout::get_padding_bottom() {
   if (_padding_to_bottom == PaddingTo::PERCENT) {
-    return _height * _padding_value_bottom;
+    return _parent->get_height() * _padding_value_bottom;
   } else if (_padding_to_bottom == PaddingTo::STATIC) {
     return _padding_value_bottom;
   } else {
-    throw(std::runtime_error("Padding bottom is not set to a valid value"));
+    throw (std::runtime_error("Padding bottom is not set to a valid value"));
     return 0;
   }
 }
@@ -361,9 +409,9 @@ void CustomLayout::set_margin(double margin_top, double margin_bottom, double ma
 }
 
 void CustomLayout::set_margin(PaddingTo margin_to_top, double margin_top,
-                               PaddingTo margin_to_bottom, double margin_bottom,
-                               PaddingTo margin_to_left, double margin_left,
-                               PaddingTo margin_to_right, double margin_right) {
+                              PaddingTo margin_to_bottom, double margin_bottom,
+                              PaddingTo margin_to_left, double margin_left,
+                              PaddingTo margin_to_right, double margin_right) {
   set_margin_top(margin_top, margin_to_top);
   set_margin_bottom(margin_bottom, margin_to_bottom);
   set_margin_left(margin_left, margin_to_left);
@@ -373,11 +421,11 @@ void CustomLayout::set_margin_sides(double margin) {
   set_margin_sides(margin, margin);
 }
 void CustomLayout::set_margin_sides(double margin_left,
-                                     double margin_right) {
+                                    double margin_right) {
   set_margin_sides(margin_left, PaddingTo::STATIC, margin_right, PaddingTo::STATIC);
 }
 void CustomLayout::set_margin_sides(double margin_left, PaddingTo margin_to_left,
-                       double margin_right, PaddingTo margin_to_right) {
+                                    double margin_right, PaddingTo margin_to_right) {
   set_margin_left(margin_left, margin_to_left);
   set_margin_right(margin_right, margin_to_right);
 }
@@ -385,11 +433,11 @@ void CustomLayout::set_margin_vertical(double margin) {
   set_margin_vertical(margin, margin);
 }
 void CustomLayout::set_margin_vertical(double margin_top,
-                                        double margin_bottom) {
+                                       double margin_bottom) {
   set_margin_vertical(margin_top, PaddingTo::STATIC, margin_bottom, PaddingTo::STATIC);
 }
 void CustomLayout::set_margin_vertical(double margin_top, PaddingTo margin_to_top,
-                       double margin_bottom, PaddingTo margin_to_bottom) {
+                                       double margin_bottom, PaddingTo margin_to_bottom) {
   set_margin_top(margin_top, margin_to_top);
   set_margin_bottom(margin_bottom, margin_to_bottom);
 }
@@ -420,7 +468,7 @@ double CustomLayout::get_margin_left() {
   } else if (_margin_to_left == PaddingTo::STATIC) {
     return _margin_value_left;
   } else {
-    throw(std::runtime_error("Padding left is not set to a valid value"));
+    throw (std::runtime_error("Margin left is not set to a valid value"));
     return 0;
   }
 }
@@ -431,7 +479,7 @@ double CustomLayout::get_margin_right() {
   } else if (_margin_to_right == PaddingTo::STATIC) {
     return _margin_value_right;
   } else {
-    throw(std::runtime_error("Padding right is not set to a valid value"));
+    throw (std::runtime_error("Margin right is not set to a valid value"));
     return 0;
   }
 }
@@ -442,7 +490,7 @@ double CustomLayout::get_margin_top() {
   } else if (_margin_to_top == PaddingTo::STATIC) {
     return _margin_value_top;
   } else {
-    throw(std::runtime_error("Padding top is not set to a valid value"));
+    throw (std::runtime_error("Margin top is not set to a valid value"));
     return 0;
   }
 }
@@ -453,7 +501,7 @@ double CustomLayout::get_margin_bottom() {
   } else if (_margin_to_bottom == PaddingTo::STATIC) {
     return _margin_value_bottom;
   } else {
-    throw(std::runtime_error("Padding bottom is not set to a valid value"));
+    throw (std::runtime_error("Margin bottom is not set to a valid value"));
     return 0;
   }
 }
@@ -479,10 +527,18 @@ void CustomLayout::set_position_y(PositionTo position_to_y, int value_y) {
 }
 
 Vector2 CustomLayout::get_position() {
+  // Split logic for x and y
   if (_position_current) { // TODO add checks and sets for this
     return {_pos_x, _pos_y};
   }
-  auto parent_inside = _parent->get_inside_destination();
+
+  Rectangle parent_inside;
+  if (!is_root()) {
+    parent_inside = _parent->get_inside_destination();
+  } else {
+    parent_inside = Rectangle(0, 0, GameStateManager::singleton().get_renderer()->get_window()->get_width(),
+                                    GameStateManager::singleton().get_renderer()->get_window()->get_height());
+  }
   switch (_position_to_x) {
     case PositionTo::RELATIVE:
       _pos_x = parent_inside.get_x() + _position_to_x_value;
@@ -521,6 +577,8 @@ Vector2 CustomLayout::get_position() {
       break;
     case PositionTo::LEFT:
     case PositionTo::RIGHT:
+      // No change to _pos_y, as these positions are horizontal
+      // TODO add logging calling them a goof
       break;
   }
 
@@ -552,7 +610,7 @@ Rectangle CustomLayout::get_inside_destination() {
 void CustomLayout::_request_child_position_update() {
   if (_layout == Layout::CHILD_CONTROLLED) return;
   double next_position = _child_spacing;
-  for (auto child : _children) {
+  for (auto child: _children) {
     if (_layout == Layout::VERTICAL) {
       child->_pos_y = next_position;
       next_position += child->get_height() + _child_spacing;
