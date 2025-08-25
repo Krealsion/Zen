@@ -12,7 +12,8 @@
 
 #include <SDL3/SDL.h>
 
-#include "vector2.h"  // Assuming this is available from the engine
+#include "callback.h"
+#include "vector2.h"
 
 namespace Zen {
 
@@ -68,8 +69,7 @@ enum MouseButton {
 
 class Input {
 public:
-  Input();
-  ~Input();
+  static void init();
 
   static void set_active_window(Window* window);
   static void update_input();
@@ -83,8 +83,7 @@ public:
 
   // Text Input
   static void start_text_input();
-  template <typename Function>
-  static void start_text_input(Function callback);
+  static void start_text_input(Action<const std::string&> callback);
   static std::string get_text_input();
   static void end_text_input();
 
@@ -111,7 +110,7 @@ public:
   static bool is_mouse_button_down(MouseButton button);
   static Vector2 get_mouse_position();
   static Vector2 get_mouse_delta();
-  static void get_mouse_wheel(float& wheel_x, float& wheel_y);
+  static Vector2 get_mouse_wheel();
   static void warp_mouse(float x, float y);
   static bool warp_mouse_absolute(float x, float y);
   static void warp_mouse_to_window(Window* window, float x, float y);
@@ -138,7 +137,7 @@ private:
 
   static std::string _text_input;
   static bool _text_input_enabled;
-  static std::function<void(std::string)> _update_text_input_callback;
+  static Action<const std::string&> _update_text_input_callback;
 
   static std::vector<std::tuple<TriggerType, KeyCombo, std::function<void(int)>, int>> _key_callbacks;
   static std::vector<std::tuple<TriggerType, MouseButton, std::function<void(int)>, int>> _mouse_callbacks;

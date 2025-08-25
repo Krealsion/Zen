@@ -1,6 +1,7 @@
 #include "game_graphics.h"
 
 #include "logic/math.h"
+#include "logger.h"
 
 #include <SDL3_ttf/SDL_ttf.h>
 
@@ -9,18 +10,6 @@
 #include <cstring>
 
 namespace Zen {
-struct PriorityDrawable {
-  PriorityDrawable(std::function<void(SDL_Renderer*)>&& draw_function, int layer, float sub_layer) {
-    this->layer = layer;
-    this->sub_layer = sub_layer;
-    this->draw_function = std::move(draw_function);
-  }
-  int layer;
-  float sub_layer;
-  std::function<void(SDL_Renderer*)> draw_function;
-  Rectangle* clipping_rect = nullptr;
-  Vector2 offset = Vector2(0, 0);
-};
 
 GameGraphics::GameGraphics() {
   _draw_list = std::vector<PriorityDrawable>();
@@ -29,7 +18,10 @@ void GameGraphics::add_drawable(PriorityDrawable&& pd) {
   if (this->_clipping_rectangle) {
     pd.clipping_rect = new Rectangle(*_clipping_rectangle);
   }
-  if ()
+  if (this->_offset) {
+    pd.offset = *this->_offset;
+  }
+  // TODO scale
   _draw_list.emplace_back(std::move(pd));
 }
 
@@ -50,7 +42,10 @@ void GameGraphics::draw(SDL_Renderer* renderer) {
     } else {
       SDL_SetRenderClipRect(renderer, nullptr);
     }
-    priority_drawable.draw_function(renderer);
+    if (priority_drawable.offset.get_x() != 0 || priority_drawable.offset.get_y() != 0) {
+
+    }
+    priority_drawable.draw_function(renderer, priority_drawable.offset);
   }
   _draw_list.clear();
 }
@@ -87,25 +82,25 @@ void GameGraphics::clear_offset() {
 }
 
 void GameGraphics::fill_rectangle(const Rectangle& rectangle, const Color& color, int layer, float sub_layer) {
-  add_drawable(std::move(PriorityDrawable([=, this](SDL_Renderer* renderer) {
+  add_drawable(std::move(PriorityDrawable([=, this](SDL_Renderer* renderer, Vector2 offset) {
     _set_color(renderer, color);
-    auto sdl_rect = _to_sdl_rect(rectangle);
+    auto sdl_rect = _to_sdl_rect(Rectangle(rectangle.get_position().add(offset), rectangle.get_size()));
     SDL_RenderFillRect(renderer, sdl_rect.get());
   }, layer, sub_layer)));
 }
 
 void GameGraphics::draw_rectangle(const Rectangle& rectangle, const Color& color, int layer, float sub_layer) {
-  add_drawable(std::move(PriorityDrawable([=, this](SDL_Renderer* renderer) {
+  add_drawable(std::move(PriorityDrawable([=, this](SDL_Renderer* renderer, Vector2 offset) {
     _set_color(renderer, color);
-    auto sdl_rect = _to_sdl_rect(rectangle);
+    auto sdl_rect = _to_sdl_rect(Rectangle(rectangle.get_position().add(offset), rectangle.get_size()));
     SDL_RenderRect(renderer, sdl_rect.get());
   }, layer, sub_layer)));
 }
 
 void GameGraphics::draw_oval(const Rectangle& oval_bounds, const Color& color, int layer, float sub_layer) {
-  add_drawable(std::move(PriorityDrawable([=, this](SDL_Renderer* renderer) {
+  add_drawable(std::move(PriorityDrawable([=, this](SDL_Renderer* renderer, Vector2 offset) {
     _set_color(renderer, color);
-    auto center = oval_bounds.get_position().add(oval_bounds.get_size().scale(.5));
+    auto center = oval_bounds.get_position().add(offset).add(oval_bounds.get_size().scale(.5));
     auto d = 2.0f * Math::PI * sqrt((pow(oval_bounds.get_width() / 2.0f, 2.0f) + pow(oval_bounds.get_height() / 2.0f, 2.0f)) / 2.0f);
     auto step = Math::PI / 4.0f / d;
     for (int i = 0; i < d; i++) {
@@ -132,9 +127,9 @@ void GameGraphics::draw_oval(const Rectangle& oval_bounds, const Color& color, i
 }
 
 void GameGraphics::fill_oval(const Rectangle& oval_bounds, const Color& color, int layer, float sub_layer) {
-  add_drawable(std::move(PriorityDrawable([=, this](SDL_Renderer* renderer) {
+  add_drawable(std::move(PriorityDrawable([=, this](SDL_Renderer* renderer, Vector2 offset) {
     _set_color(renderer, color);
-    auto center = oval_bounds.get_position().add(oval_bounds.get_size().scale(0.5f));
+    auto center = oval_bounds.get_position().add(offset).add(oval_bounds.get_size().scale(0.5f));
     auto d = 2.0f * Math::PI * sqrt((pow(oval_bounds.get_width() / 2.0f, 2.0f) + pow(oval_bounds.get_height() / 2.0f, 2.0f)) / 2.0f);
     auto step = Math::PI / 4.0f / d;
     for (int i = 0; i < d; i++) {
@@ -161,9 +156,9 @@ void GameGraphics::fill_oval(const Rectangle& oval_bounds, const Color& color, i
 }
 
 void GameGraphics::draw_texture(const std::shared_ptr<Texture>& texture, const Rectangle& destination, std::pair<bool, bool> flip, const Vector2& origin, double rotation_angle, const Rectangle& clipping, int layer, float sub_layer) {
-  add_drawable(std::move(PriorityDrawable([=, this](SDL_Renderer* renderer) {
+  add_drawable(std::move(PriorityDrawable([=, this](SDL_Renderer* renderer, Vector2 offset) {
     auto sdl_texture = texture->_get_sdl_texture();
-    auto sdl_dest = _to_sdl_rect(destination);
+    auto sdl_dest = _to_sdl_rect(Rectangle(destination.get_position().add(offset), destination.get_size()));
     auto sdl_clipping = _to_sdl_rect(clipping);
     auto sdl_origin = _to_sdl_point(origin);
     auto sdl_render_flip = _to_sdl_render_flip(flip);
@@ -188,22 +183,31 @@ void GameGraphics::draw_texture(const std::shared_ptr<Texture>& texture, const R
 }
 
 void GameGraphics::draw_line(const Zen::Vector2& start, const Zen::Vector2& end, const Zen::Color& color, int layer, float sub_layer) {
-  add_drawable(std::move(PriorityDrawable([=, this](SDL_Renderer* renderer) {
+  add_drawable(std::move(PriorityDrawable([=, this](SDL_Renderer* renderer, Vector2 offset) {
     _set_color(renderer, color);
-    auto sdl_start = _to_sdl_point(start);
-    auto sdl_end = _to_sdl_point(end);
+    auto sdl_start = _to_sdl_point(offset.add(start));
+    auto sdl_end = _to_sdl_point(offset.add(end));
     SDL_RenderLine(renderer, sdl_start->x, sdl_start->y, sdl_end->x, sdl_end->y);
   }, layer, sub_layer)));
 }
 
 void GameGraphics::draw_text(const std::string& text, const std::string& font, float font_size, const Color& color, int max_width, Vector2 position, int layer, float sub_layer) {
-  add_drawable(std::move(PriorityDrawable([=, this](SDL_Renderer* renderer) {
+  if (text.empty()) {
+    Logger::log(LogLevel::WARNING, "Attempted to draw empty text. Skipping.");
+    return;
+  }
+  add_drawable(std::move(PriorityDrawable([=](SDL_Renderer* renderer, Vector2 offset) {
     _set_color(renderer, color);
     auto path = SDL_GetBasePath();
-    TTF_Font* sdl_font = TTF_OpenFont(("Resources/TTFs/" + font).c_str(), font_size);
+    TTF_Font* sdl_font = TTF_OpenFont(("../Resources/TTFs/" + font).c_str(), font_size); // TODO: Better path resolving
     auto sdl_color = _to_sdl_color(color);
     auto text_surface = TTF_RenderText_Blended_Wrapped(sdl_font, text.c_str(), std::strlen(text.c_str()), *sdl_color, max_width);
-    auto sdl_dest = _to_sdl_rect(Rectangle(position, Vector2(text_surface->w, text_surface->h)));
+    if (text_surface == nullptr) {
+      std::string error_message = "Failed to render text: " + std::string(SDL_GetError());
+      Logger::log(LogLevel::ERROR, error_message);
+      throw std::runtime_error(error_message);
+    }
+    auto sdl_dest = _to_sdl_rect(Rectangle(offset.add(position), Vector2(text_surface->w, text_surface->h)));
     SDL_RenderTexture(renderer, SDL_CreateTextureFromSurface(renderer, text_surface), nullptr, sdl_dest.get());
     SDL_DestroySurface(text_surface);
   }, layer, sub_layer)));

@@ -9,6 +9,13 @@ find_package(SDL3 REQUIRED CONFIG)
 find_package(SDL3_image REQUIRED CONFIG)
 find_package(SDL3_ttf REQUIRED CONFIG)
 
+include(FetchContent)
+FetchContent_Declare(
+        json
+        URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
+)
+FetchContent_MakeAvailable(json)
+
 add_library(Zen
         timer.cpp
         message_bus/var_storage.h
@@ -44,7 +51,7 @@ add_library(Zen
         user_interface/text_box.cpp
         graphics/enums.h
         user_interface/custom_layout.cpp
-        zsingal.h
+        zsignal.h
         utility_states/build_state.cpp
         callback.h
         user_interface/text.cpp
@@ -53,10 +60,16 @@ add_library(Zen
         user_interface/drop_down.h
         logic/utils.h
         user_interface/scroll_view.cpp
-        user_interface/scroll_view.h)
+        user_interface/scroll_view.h
+        message_bus/socket.h
+        logger.cpp
+        logger.h
+        rttr_wrapper.h)
 
 target_include_directories(Zen PUBLIC
         ../src
+        ../lib
+        nlohmann/
         graphics/
         input/
         message_bus/
@@ -71,7 +84,6 @@ target_link_libraries(Zen
         PRIVATE
         Threads::Threads
 )
-
 find_package(Threads REQUIRED)
 
 add_library(Zen::Zen ALIAS Zen)

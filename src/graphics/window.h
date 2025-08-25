@@ -10,7 +10,6 @@ namespace Zen {
 class Window {
 public:
   Window(const std::string& name, Rectangle window_rectangle);
-
   ~Window();
 
   SDL_Window* get_window();

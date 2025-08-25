@@ -6,17 +6,13 @@
 
 namespace Zen {
 void GameState::exit() {
-  _state_manager->exit();
-}
-void GameState::handle_input() {
-
 }
 
 GameState::GameState() {
+  Input::set_active_window(get_window());
   _root_layout = new CustomLayout();
   _root_layout->set_as_root();
   _root_layout->set_size(SizeTo::STATIC, 0, SizeTo::STATIC, 0);
-  Input::set_active_window(get_window());
 }
 
 GameState::~GameState() {
@@ -24,8 +20,8 @@ GameState::~GameState() {
 }
 
 void GameState::draw_gamestate(GameGraphics& g) {
-  _root_layout->set_size(SizeTo::STATIC, _state_manager->get_renderer()->get_window()->get_width(),
-                         SizeTo::STATIC, _state_manager->get_renderer()->get_window()->get_height());
+  _root_layout->set_size(SizeTo::STATIC, get_window()->get_width(),
+                         SizeTo::STATIC, get_window()->get_height());
   draw(g);
   _root_layout->draw(g);
 }

@@ -12,7 +12,18 @@
 #include <functional>
 
 namespace Zen {
-struct PriorityDrawable;
+struct PriorityDrawable {
+  PriorityDrawable(std::function<void(SDL_Renderer*, Vector2 offset)>&& draw_function, int layer, float sub_layer) {
+    this->layer = layer;
+    this->sub_layer = sub_layer;
+    this->draw_function = std::move(draw_function);
+  }
+  int layer;
+  float sub_layer;
+  std::function<void(SDL_Renderer*, Vector2)> draw_function;
+  Rectangle* clipping_rect = nullptr;
+  Vector2 offset = Vector2(0, 0);
+};
 
 class GameGraphics {
 public:

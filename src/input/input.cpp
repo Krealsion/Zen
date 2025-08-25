@@ -14,7 +14,7 @@ MouseState Input::_mouse_state;
 
 std::string Input::_text_input;
 bool Input::_text_input_enabled = false;
-std::function<void(std::string)> Input::_update_text_input_callback = nullptr;
+Action<const std::string&> Input::_update_text_input_callback = Action<const std::string&>();
 
 std::vector<std::tuple<TriggerType, KeyCombo, std::function<void(int)>, int>> Input::_key_callbacks;
 std::vector<std::tuple<TriggerType, MouseButton, std::function<void(int)>, int>> Input::_mouse_callbacks;
@@ -35,7 +35,7 @@ std::vector<SDL_Scancode> Input::_pressed_keys;
 
 std::mutex Input::_input_mutex;
 
-Input::Input() {
+void Input::init() {
   _mouse_state.button_states.resize(5);
 
   SDL_SetGamepadEventsEnabled(true);
@@ -75,7 +75,6 @@ Input::Input() {
   _group_to_canonical[scroll_group] = SDL_SCANCODE_SCROLLLOCK;
 }
 
-Input::~Input() {}
 
 void Input::set_active_window(Window* window) {
   std::lock_guard<std::mutex> lock(_input_mutex);
@@ -174,8 +173,7 @@ void Input::start_text_input() {
   _text_input.clear();
 }
 
-template <typename Function>
-void Input::start_text_input(Function callback) {
+void Input::start_text_input(Action<const std::string&> callback) {
   _update_text_input_callback = callback;
   start_text_input();
 }
@@ -336,10 +334,9 @@ Vector2 Input::get_mouse_delta() {
   return {_mouse_state.dx, _mouse_state.dy};
 }
 
-void Input::get_mouse_wheel(float& wheel_x, float& wheel_y) {
+Vector2 Input::get_mouse_wheel() {
   std::lock_guard<std::mutex> lock(_input_mutex);
-  wheel_x = _mouse_state.wheel_x;
-  wheel_y = _mouse_state.wheel_y;
+  return {_mouse_state.wheel_x, _mouse_state.wheel_y};
 }
 
 void Input::warp_mouse(float x, float y) {

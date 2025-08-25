@@ -28,6 +28,8 @@ public:
   double get_width() const;
   double get_height() const;
 
+  Rectangle& add(const Rectangle& other);
+
   bool contains(Vector2 position) const;
 
   Rectangle copy() const;

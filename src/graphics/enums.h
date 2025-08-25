@@ -41,9 +41,8 @@ enum TextBoxFilterType {
 
 enum class SizeTo {
   STATIC = 0,
-  PARENT, // Any additional value is treated as a static addition
+  PARENT, // Any additional value is treated as a static subtraction from the size of the parent
   PARENT_PERCENT, // Any additional value is treated as a percentage with 1 being 100%
-  PARENT_STATIC, // Any additional value is subtracted from the size of the parent
   CHILDREN, // Any additional value is treated as a static addition
   CHILDREN_PERCENT, // Any additional value is treated as a percentage with 1 being 100%
   FILL

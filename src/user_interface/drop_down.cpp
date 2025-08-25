@@ -10,7 +10,7 @@ DropDown::DropDown() {
   _display_button = new Button();
   _display_button->set_size(SizeTo::PARENT, SizeTo::CHILDREN);
   _display_button->set_background_color(Color(200, 200, 200));  // Light gray default
-  _display_button->set_auto_hover_color(true);
+  _display_button->set_auto_hover_color(false);
   _display_button->set_on_click_callback([this]() { _toggle_panel(); });
   this->add_child(_display_button);
 

@@ -31,11 +31,12 @@ public:
   virtual void set_visible(bool is_visible) { _visible = is_visible;}
   [[nodiscard]] bool is_visible() const { return _visible; }
 
-  void set_as_root() { _is_root = true; }
-  bool is_root() { return (_parent == nullptr); }
+  void set_as_root() {
+    _is_root = true;
+  }
+  bool is_root() { return _is_root; }
 
   virtual void draw(GameGraphics& game_graphics);
-
 
   void set_parent(CustomLayout* parent);
   [[nodiscard]] CustomLayout* get_parent() const { return _parent; }
@@ -89,25 +90,34 @@ public:
   double get_margin_left();
   double get_margin_right();
 
-  [[nodiscard]] bool is_size_current() const { return _size_current; }
   virtual void set_width(SizeTo size_to, double value);
   virtual void set_height(SizeTo size_to, double value);
   virtual void set_size(SizeTo size_to_width, SizeTo size_to_height);
   virtual void set_size(SizeTo size_to_width, double width_value, SizeTo size_to_height, double height_value);
+  virtual void set_size(SizeTo size_to_width, SizeTo size_to_height, double height_value);
+  virtual void set_size(SizeTo size_to_width, double width_value, SizeTo size_to_height);
   Vector2 get_size();
   double get_width();
   double get_height();
 
-  [[nodiscard]] bool is_position_current() const { return _position_current; }
   virtual void set_position(PositionTo position_to_x, PositionTo position_to_y);
   virtual void set_position(PositionTo position_to_x, int value_x, PositionTo position_to_y, int value_y);
   virtual void set_position_x(PositionTo position_to_x, int VALUE_X);
   virtual void set_position_y(PositionTo position_to_y, int value_y);
   virtual Vector2 get_position();
+  double get_x();
+  double get_y();
 
   Rectangle get_owned_destination();
   Rectangle get_background_destination();
   Rectangle get_inside_destination();
+
+  double get_inside_width() {
+    return get_background_destination().get_width() - get_padding_left() - get_padding_right();
+  }
+  double get_inside_height() {
+    return get_background_destination().get_height() - get_padding_top() - get_padding_bottom();
+  }
 
   void set_vertical();
   void set_horizontal();
@@ -117,12 +127,17 @@ public:
   Color get_background_color() { return _background_color; }
 
   virtual void set_on_click_callback(std::function<void()> callback) { _on_click_callback = std::move(callback); }
+  bool has_callback() const { return _on_click_callback != nullptr; }
   // This is a method used to simulate a click on this object
   virtual void click();
 
+  void reset();
+
 protected:
   void _request_child_position_update();
-  void _child_size_changed() { _size_current = false; }
+  void _child_size_changed();
+  void _on_position_changed();
+  void _on_size_changed();
 
   std::string _name;
   static int _next_id;
@@ -136,12 +151,14 @@ protected:
   bool _enabled = true;
   bool _visible = true;
 
-  bool _position_current = false; // set to false when any position related to PositionTo values changes
-  bool _size_current = false; // set to false when any size related to SizeTo values changes
+  bool _x_current = false;
+  bool _y_current = false;
   double _pos_x = 0;
   double _pos_y = 0;
   double _width = 0;
   double _height = 0;
+  bool _width_current = false; // set to false when any width related to SizeTo values changes
+  bool _height_current = false; // set to false when any height related to SizeTo
 
   // Padding can either be a static value or a percentage of the layout, else throw error, check on set
   PaddingTo _padding_to_top = PaddingTo::STATIC;

@@ -62,6 +62,12 @@ double Rectangle::get_height() const {
   return _size.get_y();
 }
 
+Rectangle& Rectangle::add(const Rectangle& other) {
+  _position.add(other._position);
+  _size.add(other._size);
+  return *this;
+}
+
 bool Rectangle::contains(Vector2 position) const {
   return position.get_x() >= _position.get_x() &&
     position.get_y() >= _position.get_y() &&

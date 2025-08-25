@@ -1,0 +1,24 @@
+{
+  "custom_layout": {
+    "options": {
+      "border_in_padding": false,
+      "default_child_padding": 8
+
+    },
+    "text" : {
+
+    },
+    "text_box": {
+
+    },
+    "button": {
+
+    },
+    "checkbox": {
+
+    },
+    "dropdown": {
+
+    }
+  }
+}

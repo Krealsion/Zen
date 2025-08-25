@@ -19,8 +19,17 @@ class GameState;
  */
 class GameStateManager {
 public:
-  explicit GameStateManager(GameState* initial_state);
 
+  //singleton
+  static GameStateManager& singleton() {
+    static GameStateManager instance;
+    return instance;
+  }
+  GameStateManager(const GameStateManager&) = delete;
+  GameStateManager& operator=(const GameStateManager&) = delete;
+  void initialize_with_state(GameState* initial_state);
+
+  GameStateManager();
   ~GameStateManager();
 
   void push_state(GameState* state);

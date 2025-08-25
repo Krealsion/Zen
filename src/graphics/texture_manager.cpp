@@ -1,6 +1,7 @@
 #include "texture_manager.h"
 
 #include <cstring>
+#include <ranges>
 #include <SDL3_image/SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
@@ -9,10 +10,15 @@ std::map<std::string, std::shared_ptr<Texture>> TextureManager::_texture_map;
 SDL_Renderer* TextureManager::_renderer = nullptr;
 
 void TextureManager::init_ttf() {
+  if (!TTF_Init()) {
+    // TODO Add error handling
+    std::string error_message = "Failed to initialize TTF: " + std::string(SDL_GetError());
+    std::cout << error_message;
+  }
 }
 
 void TextureManager::unload_textures() {
-  for (const auto& [key, value] : _texture_map) {
+  for (const auto& value : _texture_map | std::views::values) {
     SDL_DestroyTexture(value->_get_sdl_texture());
   }
   _texture_map.clear();
@@ -22,7 +28,7 @@ std::shared_ptr<Texture> TextureManager::get_texture(const std::string& texture_
   if (!_renderer)
     return std::make_shared<Texture>(Texture());
 
-  if (_texture_map.count(texture_path) != 0) {
+  if (_texture_map.contains(texture_path)) {
     return _texture_map.find(texture_path)->second;
   }
 
@@ -46,9 +52,15 @@ Vector2 TextureManager::get_text_size(const std::string& text, const std::string
 }
 
 Vector2 TextureManager::get_text_size(const std::string& text, const std::string& font_path, float text_size, int max_width) {
-  std::string usable_font_path = "Resources//TTFs//" + font_path;
+  std::string usable_font_path = "..//Resources//TTFs//" + font_path;
+  TTF_Init();
   TTF_Font* font = TTF_OpenFont(usable_font_path.c_str(), text_size);
-  if (!font) return {0,0};
+  if (!font) {
+    // TODO Add error handling
+    std::string error_message = "Failed to load font: " + usable_font_path + " Error: " + SDL_GetError();
+    std::cout << error_message;
+    return {0,0};
+  }
   int x, y;
   TTF_GetStringSizeWrapped(font, text.c_str(), std::strlen(text.c_str()), max_width, &x, &y);
   TTF_CloseFont(font);

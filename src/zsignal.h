@@ -3,6 +3,8 @@
 #include <vector>
 #include <functional>
 
+#include <callback.h>
+
 namespace Zen {
 class Signal {
 public:
@@ -12,7 +14,7 @@ public:
     emit();
   }
 
-  void connect(void* key, std::function<void()>&& callback) {
+  void connect(void* key, Action<>&& callback) {
     _callbacks.emplace_back(key, std::move(callback));
   }
 
@@ -33,6 +35,6 @@ public:
   }
 
 private:
-  std::vector<std::tuple<void*, std::function<void()>>> _callbacks;
+  std::vector<std::tuple<void*, Action<>>> _callbacks;
 };
 }
