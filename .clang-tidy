@@ -1,0 +1,20 @@
+Checks: >
+  bugprone-*,
+  performance-*,
+  modernize-*,
+  readability-*,
+  portability-*,
+  cppcoreguidelines-avoid-goto,
+  cppcoreguidelines-init-variables,
+  cppcoreguidelines-narrowing-conversions,
+  hicpp-exception-baseclass,
+  misc-*,
+  -modernize-use-trailing-return-type,
+  -readability-magic-numbers,
+  -cppcoreguidelines-owning-memory,
+  -hicpp-braces-around-statements
+
+WarningsAsErrors: ''
+HeaderFilterRegex: '^(src|include|examples)/'
+AnalyzeTemporaryDtors: true
+FormatStyle: none
