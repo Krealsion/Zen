@@ -1,4 +1,4 @@
-#include "shape.h"
+#include "3d/shape.h"
 
 namespace Zen {
 void Shape::connect(Vector3 A, Vector3 B){

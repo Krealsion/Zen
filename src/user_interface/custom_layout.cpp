@@ -811,7 +811,6 @@ void CustomLayout::_on_size_changed() {
   _width_current = false;
   _height_current = false;
   for (auto child : _children) {
-    if (_size)
   }
   if (_parent) {
     _parent->_child_size_changed(); // Bubble up

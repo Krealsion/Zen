@@ -1,0 +1,39 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "debug",
+      "generator": "Ninja",
+      "binaryDir": "build/debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "ZEN_ENABLE_WARNINGS": "ON",
+        "ZEN_WARNINGS_AS_ERRORS": "OFF"
+      }
+    },
+    {
+      "name": "debug-asan",
+      "inherits": "debug",
+      "binaryDir": "build/debug-asan",
+      "cacheVariables": {
+        "ZEN_ENABLE_ASAN": "ON",
+        "ZEN_ENABLE_UBSAN": "ON"
+      }
+    },
+    {
+      "name": "release",
+      "generator": "Ninja",
+      "binaryDir": "build/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "ZEN_ENABLE_WARNINGS": "ON",
+        "ZEN_WARNINGS_AS_ERRORS": "OFF"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "build-debug", "configurePreset": "debug" },
+    { "name": "build-debug-asan", "configurePreset": "debug-asan" },
+    { "name": "build-release", "configurePreset": "release" }
+  ]
+}

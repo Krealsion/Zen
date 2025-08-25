@@ -10,7 +10,7 @@ class Signal {
 public:
   Signal() = default;
 
-  void operator()() {
+  void operator()() const {
     emit();
   }
 
@@ -19,12 +19,11 @@ public:
   }
 
   void disconnect(void* key) {
-    _callbacks.erase(std::remove_if(_callbacks.begin(), _callbacks.end(), [key](const auto& callback_tuple) {
-      return std::get<0>(callback_tuple) == key;
-    }), _callbacks.end());
+    std::erase_if(_callbacks, [key](const auto& callback_tuple) { return std::get<0>(callback_tuple) == key; });
   }
 
-  void emit() {
+  void emit() const
+  {
     for (auto& callback_tuple : _callbacks) {
       if (std::get<0>(callback_tuple) == nullptr) {
         // TODO add error logging

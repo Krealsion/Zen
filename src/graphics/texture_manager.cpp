@@ -1,9 +1,12 @@
 #include "texture_manager.h"
 
-#include <cstring>
-#include <ranges>
+#include "logger.h"
+
 #include <SDL3_image/SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
+#include <cstring>
+#include <iostream>
+#include <ranges>
 
 namespace Zen {
 std::map<std::string, std::shared_ptr<Texture>> TextureManager::_texture_map;
@@ -12,8 +15,7 @@ SDL_Renderer* TextureManager::_renderer = nullptr;
 void TextureManager::init_ttf() {
   if (!TTF_Init()) {
     // TODO Add error handling
-    std::string error_message = "Failed to initialize TTF: " + std::string(SDL_GetError());
-    std::cout << error_message;
+    Logger::log(LogLevel::ERROR, "Failed to initialize TTF: " + std::string(SDL_GetError()));
   }
 }
 

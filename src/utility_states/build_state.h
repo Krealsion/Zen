@@ -1,7 +1,7 @@
 #pragma once
 
 #include "callback.h"
-#include "game_state.h"
+#include "state_management/game_state.h"
 #include "timer.h"
 #include "user_interface/text.h"
 #include "user_interface/text_box.h"
