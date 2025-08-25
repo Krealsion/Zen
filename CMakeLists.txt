@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.24)project(Zen LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.24)
+project(Zen LANGUAGES CXX)
 
 # --- Standard & compile_commands.json ---
 set(CMAKE_CXX_STANDARD 23)
@@ -12,16 +13,6 @@ option(ZEN_ENABLE_ASAN "Enable AddressSanitizer" OFF)
 option(ZEN_ENABLE_UBSAN "Enable UBSanitizer" OFF)
 option(ZEN_ENABLE_LSAN "Enable LeakSanitizer (Linux/Clang)" OFF)
 
-find_package(SDL3 REQUIRED CONFIG)
-find_package(SDL3_image REQUIRED CONFIG)
-find_package(SDL3_ttf REQUIRED CONFIG)
-
-include(FetchContent)
-FetchContent_Declare(
-        json
-        URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
-)
-FetchContent_MakeAvailable(json)
 # --- Functions to apply warnings/sanitizers to targets ---
 function(zen_enable_warnings target)
   if (NOT ZEN_ENABLE_WARNINGS)
@@ -141,6 +132,7 @@ add_library(Zen STATIC
         src/logger.cpp
         src/logger.h
         src/rttr_wrapper.h)
+
 target_include_directories(Zen PUBLIC
         src/
         lib/
@@ -152,13 +144,22 @@ target_include_directories(Zen PUBLIC
         src/types/3d/
 )
 
+find_package(SDL3 REQUIRED CONFIG)
+find_package(SDL3_image REQUIRED CONFIG)
+find_package(SDL3_ttf REQUIRED CONFIG)
+find_package(Threads REQUIRED)
+
+include(FetchContent)
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
+FetchContent_MakeAvailable(json)
+
 target_link_libraries(Zen PUBLIC
         SDL3::SDL3
         SDL3_image::SDL3_image
         SDL3_ttf::SDL3_ttf PRIVATE
         Threads::Threads
+        nlohmann_json::nlohmann_json
 )
-find_package(Threads REQUIRED)
 
 add_library(Zen::Zen ALIAS Zen)
 
